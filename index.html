@@ -18,27 +18,109 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header>
+    <header class="navbar-header">
       <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-3 col-sm-12">
-            <img src="./assets/logo.png" alt="InkFlow Logo" srcset="" width="50%" />
+        <div class="row align-items-center">
+          <div class="col-md-3 col-sm-12 d-flex align-items-center">
+            <img src="./assets/logo.png" alt="InkFlow Logo" class="logo" />
           </div>
-          <div class="col-md-9 col-sm-12">
-            <div class="container-fluid">
-              <div class="row">
-                <div class="col-6">
-                  <div class="search-bar d-flex align-items-center bg-light rounded-pill p-2">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                    <img src="./assets/search-svgrepo-com.svg" alt="Search Icon" width="20px" height="20px" />
-                  </div>
-                </div>
-                <div class="col-6"></div>
-              </div>
+          <div class="col-md-6 col-sm-12">
+            <div class="search-bar d-flex align-items-center">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+              <img src="./assets/search-svgrepo-com.svg" alt="Search Icon" width="20px" height="20px" />
             </div>
+          </div>
+          <div class="col-md-3 col-sm-12 d-flex justify-content-end align-items-center">
+            <button type="button" class="btn btn-primary rounded-pill">SignIn/Up</button>
           </div>
         </div>
       </div>
     </header>
+
+    <header class="image-carousel-header">
+      <div class="carousel-container">
+        <div class="card-wrapper" id="card1">
+          <img src="./assets/download (1).jpg" alt="Card 1" class="carousel-card" />
+        </div>
+        <div class="card-wrapper" id="card2">
+          <img src="./assets/download (2).jpg" alt="Card 2" class="carousel-card" />
+        </div>
+        <div class="card-wrapper" id="card3">
+          <img src="./assets/download (3).jpg" alt="Card 3" class="carousel-card" />
+        </div>
+        <div class="card-wrapper" id="card4">
+          <img src="./assets/download (4).jpg" alt="Card 4" class="carousel-card" />
+        </div>
+        <div class="card-wrapper" id="card5">
+          <img src="./assets/I travel once every two months.jpg" alt="Card 5" class="carousel-card" />
+        </div>
+        <div class="card-wrapper" id="card6">
+          <img src="./assets/Fujifilm Instax Mini EVO Hybrid Instant Camera.jpg" alt="Card 6" class="carousel-card" />
+        </div>
+        <div class="card-wrapper" id="card7">
+          <img src="./assets/journaling through everything.jpg" alt="Card 7" class="carousel-card" />
+        </div>
+        <div class="card-wrapper" id="card8">
+          <img src="./assets/download.jpg" alt="Card 8" class="carousel-card" />
+        </div>
+      </div>
+
+      <!-- Centered Logo -->
+      <div class="carousel-logo">
+        <img src="./assets/logo.png" alt="InkFlow Logo" />
+      </div>
+
+      <!-- Fullscreen Modal -->
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+          <span class="close-modal">&times;</span>
+          <img id="modalImage" src="" alt="Full View" />
+        </div>
+      </div>
+    </header>
+
+    <script>
+      // Add click event to cards for fullscreen
+      document.querySelectorAll('.card-wrapper').forEach((card) => {
+        card.addEventListener('click', function() {
+          const img = this.querySelector('img');
+          const modal = document.getElementById('modalOverlay');
+          const modalImg = document.getElementById('modalImage');
+          
+          modalImg.src = img.src;
+          modal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        });
+      });
+
+      // Close modal on close button click
+      document.querySelector('.close-modal').addEventListener('click', function() {
+        const modal = document.getElementById('modalOverlay');
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      });
+
+      // Close modal on overlay click
+      document.getElementById('modalOverlay').addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        }
+      });
+
+      // Close modal on Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          const modal = document.getElementById('modalOverlay');
+          modal.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        }
+      });
+
+      // Shuffle cards when page loads
+      window.addEventListener('DOMContentLoaded', function() {
+        // Cards are ready
+      });
+    </script>
   </body>
 </html>

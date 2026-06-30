@@ -76,7 +76,7 @@
   padding: 0;
   position: relative;
   overflow: visible;
-  height: 550px;
+  height: 600px;
 }
 
 .carousel-logo {
@@ -258,6 +258,33 @@
   }
 }
 
+/* Blog section card sizing */
+.blog-section .row > [class^="col"] {
+  display: flex;
+}
+
+.blog-section .card {
+  width: 100%;
+  min-height: 260px;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.blog-section .card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  aspect-ratio: 16 / 9;
+}
+
+.blog-section .card-img-overlay {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.75) 100%);
+}
+
 @keyframes slideIn {
   0% {
     opacity: 0;
@@ -321,5 +348,26 @@
   .carousel-container {
     height: 250px;
   }
+}
 
+/* Blog Card Styles */
+.blog-card {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.blog-card .row {
+  height: 100%;
+}
+
+.blog-card .col-md-4 {
+  aspect-ratio: 1;
+  height: auto;
+}
+
+.blog-card .col-md-4 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

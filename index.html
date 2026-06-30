@@ -31,7 +31,7 @@
             </div>
           </div>
           <div class="col-md-3 col-sm-12 d-flex justify-content-end align-items-center">
-            <button type="button" class="btn btn-primary rounded-pill">SignIn/Up</button>
+            <button id="signinBtn" type="button" class="btn btn-primary rounded-pill">SignIn/Up</button>
           </div>
         </div>
       </div>
@@ -78,49 +78,87 @@
         </div>
       </div>
     </header>
-
-    <script>
-      // Add click event to cards for fullscreen
-      document.querySelectorAll('.card-wrapper').forEach((card) => {
-        card.addEventListener('click', function() {
-          const img = this.querySelector('img');
-          const modal = document.getElementById('modalOverlay');
-          const modalImg = document.getElementById('modalImage');
-          
-          modalImg.src = img.src;
-          modal.classList.add('active');
-          document.body.style.overflow = 'hidden';
-        });
-      });
-
-      // Close modal on close button click
-      document.querySelector('.close-modal').addEventListener('click', function() {
-        const modal = document.getElementById('modalOverlay');
-        modal.classList.remove('active');
-        document.body.style.overflow = 'auto';
-      });
-
-      // Close modal on overlay click
-      document.getElementById('modalOverlay').addEventListener('click', function(e) {
-        if (e.target === this) {
-          this.classList.remove('active');
-          document.body.style.overflow = 'auto';
-        }
-      });
-
-      // Close modal on Escape key
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          const modal = document.getElementById('modalOverlay');
-          modal.classList.remove('active');
-          document.body.style.overflow = 'auto';
-        }
-      });
-
-      // Shuffle cards when page loads
-      window.addEventListener('DOMContentLoaded', function() {
-        // Cards are ready
-      });
-    </script>
+    <main>
+      <section class="blog-section mt-5">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 col-sm-12">
+              <div class="card bg-dark text-white">
+                <img src="./assets/download (1).jpg" class="card-img" alt="..." />
+                <div class="card-img-overlay">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                  <p class="card-text">Last updated 3 mins ago</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+              <div class="card bg-dark text-white">
+                <img src="./assets/download (2).jpg" class="card-img" alt="..." />
+                <div class="card-img-overlay">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                  <p class="card-text">Last updated 3 mins ago</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-sm-12 mt-3">
+              <div class="card bg-dark text-white">
+                <img src="./assets/download (3).jpg" class="card-img" alt="..." />
+                <div class="card-img-overlay">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                  <p class="card-text">Last updated 3 mins ago</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-sm-12 mt-3">
+              <div class="card bg-dark text-white">
+                <img src="./assets/download (4).jpg" class="card-img" alt="..." />
+                <div class="card-img-overlay">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                  <p class="card-text">Last updated 3 mins ago</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-sm-12 mt-3">
+              <div class="card bg-dark text-white">
+                <img src="./assets/Fujifilm Instax Mini EVO Hybrid Instant Camera.jpg" class="card-img" alt="..." />
+                <div class="card-img-overlay">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                  <p class="card-text">Last updated 3 mins ago</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-sm-12 mt-3">
+              <div class="card bg-dark text-white">
+                <img src="./assets/I travel once every two months.jpg" class="card-img" alt="..." />
+                <div class="card-img-overlay">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                  <p class="card-text">Last updated 3 mins ago</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 text-center">
+            <p>&copy; 2026 InkFlow. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="script.js"></script>
   </body>
 </html>

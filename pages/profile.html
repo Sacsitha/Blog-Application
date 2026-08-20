@@ -15,33 +15,30 @@
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
       crossorigin="anonymous"
     ></script>
-    <link rel="stylesheet" href="profile_style.css" />
+    <link rel="stylesheet" href="../css/profile.css" />
   </head>
   <body>
     <header class="navbar-header">
       <div class="container-fluid">
         <div class="row align-items-center">
           <div class="col-md-3 col-sm-12 d-flex align-items-center">
-            <img src="./assets/logo.png" alt="InkFlow Logo" class="logo" />
+            <a href="../index.html" aria-label="InkFlow home">
+              <img src="../assets/images/logo/logo.png" alt="InkFlow Logo" class="logo" />
+            </a>
           </div>
           <div class="col-md-6 col-sm-12">
-            <div class="search-bar d-flex align-items-center">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-              <img src="./assets/search-svgrepo-com.svg" alt="Search Icon" width="20px" height="20px" />
-            </div>
+            <form class="search-bar d-flex align-items-center" action="search_page.html" method="get">
+              <input id="profileSearchInput" class="form-control me-2" name="q" type="search" placeholder="Search stories" aria-label="Search stories" />
+              <button type="submit" class="profile-search-button" aria-label="Search">
+                <img src="../assets/images/icons/search-svgrepo-com.svg" alt="" width="20" height="20" />
+              </button>
+            </form>
           </div>
           <div class="col-md-3 col-sm-12 d-flex justify-content-end align-items-center gap-3">
-            <a href="#" class="btn btn-primary rounded-pill">Write</a>
-            <div class="profile-menu-container">
-              <img src="./assets/profile-default-svgrepo-com.svg" alt="Profile" class="profile-logo" style="width: 40px; height: 40px; border-radius: 50%; cursor: pointer" id="profileToggle" />
-              <nav class="profile-vertical-nav" id="profileNav">
-                <a href="user_profile.html" class="nav-item">Edit Profile</a>
-                <a href="#" class="nav-item">Settings</a>
-                <a href="#" class="nav-item">Help</a>
-                <hr />
-                <a href="Login.html" class="nav-item">Logout</a>
-              </nav>
-            </div>
+            <a href="story.html" class="btn btn-primary rounded-pill">Write</a>
+            <a href="user_profile.html" aria-label="Open user profile">
+              <img src="../assets/images/icons/profile-default-svgrepo-com.svg" alt="Profile" class="profile-logo" style="width: 40px; height: 40px; border-radius: 50%; cursor: pointer" />
+            </a>
           </div>
         </div>
       </div>
@@ -50,19 +47,19 @@
     <!-- Vertical Navigation Sidebar -->
     <nav class="sidebar-nav">
       <ul class="nav-list">
-        <li><a href="index.html" class="nav-link">Home</a></li>
-        <li><a href="profile.html" class="nav-link active">Profile</a></li>
-        <li><a href="#" class="nav-link">Stories</a></li>
+        <li><a href="profile.html" class="nav-link active">Home</a></li>
+        <li><a href="user_profile.html" class="nav-link">Profile</a></li>
+        <li><a href="story.html" class="nav-link">Stories</a></li>
       </ul>
     </nav>
 
     <!-- Right Profile Sidebar -->
     <aside class="profile-sidebar">
       <div class="profile-card">
-        <img src="./assets/profile-default-svgrepo-com.svg" alt="Profile" class="profile-image" />
+        <img src="../assets/images/icons/profile-default-svgrepo-com.svg" alt="Profile" class="profile-image" />
         <h3 class="profile-name">User Name</h3>
         <p class="profile-bio">Your bio goes here</p>
-        <button class="btn btn-primary btn-edit">Edit Profile</button>
+        <a href="user_profile.html" class="btn btn-primary btn-edit">View Profile</a>
       </div>
     </aside>
 
@@ -71,7 +68,7 @@
         <div class="container">
           <div class="modern-card mb-4">
             <div class="card-image-wrapper">
-              <img src="./assets/download (1).jpg" class="card-image" alt="Blog post" />
+              <img src="../assets/images/backgrounds/download (1).jpg" class="card-image" alt="Blog post" />
             </div>
             <div class="card-content">
               <h5 class="card-title">Card title</h5>
@@ -81,7 +78,7 @@
           </div>
           <div class="modern-card mb-4">
             <div class="card-image-wrapper">
-              <img src="./assets/download (2).jpg" class="card-image" alt="Blog post" />
+              <img src="../assets/images/backgrounds/download (2).jpg" class="card-image" alt="Blog post" />
             </div>
             <div class="card-content">
               <h5 class="card-title">Card title</h5>
@@ -91,7 +88,7 @@
           </div>
           <div class="modern-card mb-4">
             <div class="card-image-wrapper">
-              <img src="./assets/download (3).jpg" class="card-image" alt="Blog post" />
+              <img src="../assets/images/backgrounds/download (3).jpg" class="card-image" alt="Blog post" />
             </div>
             <div class="card-content">
               <h5 class="card-title">Card title</h5>
@@ -101,7 +98,7 @@
           </div>
           <div class="modern-card mb-4">
             <div class="card-image-wrapper">
-              <img src="./assets/download (4).jpg" class="card-image" alt="Blog post" />
+              <img src="../assets/images/backgrounds/download (4).jpg" class="card-image" alt="Blog post" />
             </div>
             <div class="card-content">
               <h5 class="card-title">Card title</h5>
@@ -111,7 +108,7 @@
           </div>
           <div class="modern-card mb-4">
             <div class="card-image-wrapper">
-              <img src="./assets/Fujifilm Instax Mini EVO Hybrid Instant Camera.jpg" class="card-image" alt="Blog post" />
+              <img src="../assets/images/backgrounds/Fujifilm Instax Mini EVO Hybrid Instant Camera.jpg" class="card-image" alt="Blog post" />
             </div>
             <div class="card-content">
               <h5 class="card-title">Card title</h5>
@@ -121,7 +118,7 @@
           </div>
           <div class="modern-card mb-4">
             <div class="card-image-wrapper">
-              <img src="./assets/I travel once every two months.jpg" class="card-image" alt="Blog post" />
+              <img src="../assets/images/backgrounds/I travel once every two months.jpg" class="card-image" alt="Blog post" />
             </div>
             <div class="card-content">
               <h5 class="card-title">Card title</h5>
@@ -141,21 +138,10 @@
         </div>
       </div>
     </footer>
-    <script src="script.js"></script>
+    <script src="../js/script.js"></script>
     <script>
-      document.getElementById("profileToggle").addEventListener("click", function (e) {
-        e.preventDefault();
-        const profileNav = document.getElementById("profileNav");
-        profileNav.classList.toggle("active");
-      });
-
-      // Close menu when clicking outside
-      document.addEventListener("click", function (event) {
-        const profileNav = document.getElementById("profileNav");
-        const profileToggle = document.getElementById("profileToggle");
-        if (!event.target.closest(".profile-menu-container")) {
-          profileNav.classList.remove("active");
-        }
+      document.getElementById("profileSearchInput").addEventListener("click", function () {
+        window.location.href = "search_page.html";
       });
     </script>
   </body>

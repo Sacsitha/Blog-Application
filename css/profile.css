@@ -58,6 +58,15 @@ body {
 	opacity: 0.6;
 }
 
+.profile-search-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	background: transparent;
+	border: 0;
+}
+
 .navbar-header .btn-primary,
 .btn-primary {
 	background-color: #0020a8;

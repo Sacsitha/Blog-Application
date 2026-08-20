@@ -1,0 +1,243 @@
+			.story-main {
+				min-height: calc(100vh - 76px);
+				padding: 42px 34px 64px;
+			}
+
+			.story-editor {
+				max-width: 980px;
+				margin: 0 auto;
+			}
+
+			.story-heading {
+				margin-bottom: 28px;
+			}
+
+			.story-heading h1 {
+				margin-bottom: 8px;
+				font-size: clamp(28px, 4vw, 42px);
+				font-weight: 600;
+				letter-spacing: 0;
+			}
+
+			.story-heading p {
+				margin: 0;
+				color: #6c757d;
+			}
+
+			.editor-panel,
+			.story-options {
+				background: #ffffff;
+				border: 1px solid #e9ecef;
+				border-radius: 6px;
+				box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+			}
+
+			.editor-panel {
+				padding: 30px 36px 22px;
+			}
+
+			.story-field-label {
+				display: block;
+				margin-bottom: 8px;
+				color: #495057;
+				font-size: 13px;
+				font-weight: 600;
+			}
+
+			.story-title-input,
+			.story-subtitle-input,
+			.story-body-input,
+			.story-tags-input {
+				width: 100%;
+				border: 1px solid #dee2e6;
+				border-radius: 4px;
+				outline: none;
+				transition: border-color 0.2s ease, box-shadow 0.2s ease;
+			}
+
+			.story-title-input:focus,
+			.story-subtitle-input:focus,
+			.story-body-input:focus,
+			.story-tags-input:focus {
+				border-color: #0020a8;
+				box-shadow: 0 0 0 3px rgba(0, 32, 168, 0.1);
+			}
+
+			.story-title-input {
+				padding: 12px 14px;
+				color: #212529;
+				font-size: 28px;
+				font-weight: 600;
+			}
+
+			.story-subtitle-input,
+			.story-tags-input {
+				padding: 10px 12px;
+				color: #495057;
+				font-size: 15px;
+			}
+
+			.story-body-input {
+				min-height: 500px;
+				padding: 16px;
+				resize: vertical;
+				color: #212529;
+				font-size: 17px;
+				line-height: 1.75;
+			}
+
+			.story-body-input::placeholder,
+			.story-title-input::placeholder,
+			.story-subtitle-input::placeholder,
+			.story-tags-input::placeholder {
+				color: #adb5bd;
+			}
+
+			.body-meta {
+				display: flex;
+				justify-content: flex-end;
+				padding-top: 7px;
+				color: #868e96;
+				font-size: 12px;
+			}
+
+			.story-options {
+				margin-top: 18px;
+				padding: 22px 24px;
+			}
+
+			.story-options h2 {
+				margin-bottom: 18px;
+				font-size: 17px;
+				font-weight: 600;
+			}
+
+			.cover-upload {
+				display: flex;
+				align-items: center;
+				gap: 16px;
+				min-height: 92px;
+				padding: 14px;
+				border: 1px dashed #adb5bd;
+				border-radius: 4px;
+				background: #f8f9fa;
+			}
+
+			.cover-preview {
+				display: none;
+				width: 90px;
+				height: 62px;
+				object-fit: cover;
+				border-radius: 4px;
+			}
+
+			.cover-preview.visible {
+				display: block;
+			}
+
+			.upload-copy {
+				flex: 1;
+			}
+
+			.upload-copy strong {
+				display: block;
+				margin-bottom: 3px;
+				font-size: 14px;
+			}
+
+			.upload-copy span {
+				color: #6c757d;
+				font-size: 12px;
+			}
+
+			.upload-button {
+				flex-shrink: 0;
+				padding: 8px 14px;
+				color: #0020a8;
+				background: #ffffff;
+				border: 1px solid #0020a8;
+				border-radius: 4px;
+				font-size: 13px;
+				font-weight: 600;
+				cursor: pointer;
+			}
+
+			.upload-button:hover {
+				color: #ffffff;
+				background: #0020a8;
+			}
+
+			.editor-actions {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 14px;
+				margin-top: 24px;
+			}
+
+			.action-group {
+				display: flex;
+				gap: 10px;
+			}
+
+			.editor-actions button {
+				padding: 9px 18px;
+				border-radius: 4px;
+				font-size: 14px;
+				font-weight: 600;
+			}
+
+			.draft-button {
+				color: #495057;
+				background: #ffffff;
+				border: 1px solid #ced4da;
+			}
+
+			.draft-button:hover {
+				background: #f8f9fa;
+			}
+
+			.status-message {
+				color: #198754;
+				font-size: 13px;
+			}
+
+			@media (max-width: 768px) {
+				.story-main {
+					padding: 28px 15px 48px;
+				}
+
+				.editor-panel {
+					padding: 22px 18px 18px;
+				}
+
+				.story-title-input {
+					font-size: 23px;
+				}
+
+				.story-body-input {
+					min-height: 420px;
+					font-size: 16px;
+				}
+			}
+
+			@media (max-width: 520px) {
+				.cover-upload,
+				.editor-actions {
+					align-items: stretch;
+					flex-direction: column;
+				}
+
+				.upload-button {
+					text-align: center;
+				}
+
+				.action-group,
+				.action-group button {
+					width: 100%;
+				}
+
+				.action-group button {
+					flex: 1;
+				}
+			}

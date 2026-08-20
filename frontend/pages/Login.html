@@ -22,21 +22,56 @@
       <div class="login-box">
         <h2>Login</h2>
         <p class="text-muted">Welcome back to <a href="../index.html" class="color">InkFlow</a></p>
-        <form>
+        <form id="loginForm">
           <div class="mb-3">
-            <label for="name" class="form-label">Username</label>
-            <input type="text" class="form-control" id="name" placeholder="Enter your username" />
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" placeholder="Enter your username" required />
           </div>
           <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter your password" />
+            <input type="password" class="form-control" id="password" placeholder="Enter your password" required />
           </div>
-          <button type="submit" class="btn btn-primary w-100">Login</button>
+          <div id="errorMessage" class="mb-3 alert alert-danger" style="display:none;"></div>
+          <button type="submit" class="btn btn-primary w-100" id="loginBtn">Login</button>
           <div class="mt-3">
             <p class="text-muted">Don't have an account? <a href="sign_up.html" class="text-danger">Sign up</a></p>      
           </div>
         </form>
       </div>
     </main>
+
+    <script src="../js/api-client.js"></script>
+    <script>
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        try {
+          loginBtn.disabled = true;
+          loginBtn.textContent = 'Logging in...';
+          errorMessage.style.display = 'none';
+          
+          const response = await APIClient.login(username, password);
+          
+          if (response.success) {
+            // Save user and token
+            APIClient.setUser(response.user);
+            APIClient.setToken(response.token);
+            
+            // Redirect to profile page
+            window.location.href = 'profile.html';
+          }
+        } catch (error) {
+          errorMessage.textContent = error.message || 'Login failed. Please check your credentials.';
+          errorMessage.style.display = 'block';
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'Login';
+        }
+      });
+    </script>
   </body>
 </html>

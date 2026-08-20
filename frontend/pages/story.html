@@ -108,12 +108,36 @@
 			</div>
 		</main>
 
+		<script src="../js/api-client.js"></script>
 		<script>
 			const storyBody = document.getElementById("storyBody");
 			const wordCount = document.getElementById("wordCount");
 			const statusMessage = document.getElementById("statusMessage");
 			const coverImage = document.getElementById("coverImage");
 			const coverPreview = document.getElementById("coverPreview");
+			const storyForm = document.getElementById("storyForm");
+			const saveDraftBtn = document.getElementById("saveDraft");
+
+			// Check if user is authenticated
+			document.addEventListener('DOMContentLoaded', () => {
+				if (!APIClient.isAuthenticated()) {
+					window.location.href = 'Login.html';
+				}
+				
+				// Load draft if exists
+				const draft = localStorage.getItem("inkflowDraft");
+				if (draft) {
+					const draftData = JSON.parse(draft);
+					document.getElementById("storyTitle").value = draftData.title || '';
+					document.getElementById("storySubtitle").value = draftData.subtitle || '';
+					storyBody.value = draftData.body || '';
+					document.getElementById("storyTags").value = draftData.tags || '';
+					
+					// Update word count
+					const words = storyBody.value.trim() ? storyBody.value.trim().split(/\s+/).length : 0;
+					wordCount.textContent = `${words} ${words === 1 ? "word" : "words"}`;
+				}
+			});
 
 			storyBody.addEventListener("input", () => {
 				const words = storyBody.value.trim() ? storyBody.value.trim().split(/\s+/).length : 0;
@@ -128,25 +152,87 @@
 				statusMessage.textContent = "Cover image added";
 			});
 
-			document.getElementById("saveDraft").addEventListener("click", () => {
+			saveDraftBtn.addEventListener("click", (e) => {
+				e.preventDefault();
 				localStorage.setItem("inkflowDraft", JSON.stringify({
 					title: document.getElementById("storyTitle").value,
 					subtitle: document.getElementById("storySubtitle").value,
 					body: storyBody.value,
 					tags: document.getElementById("storyTags").value
 				}));
-				statusMessage.textContent = "Draft saved";
+				statusMessage.textContent = "Draft saved ✓";
+				statusMessage.style.color = "green";
+				setTimeout(() => {
+					statusMessage.textContent = "";
+					statusMessage.style.color = "";
+				}, 2000);
 			});
 
-			document.getElementById("storyForm").addEventListener("submit", (event) => {
+			storyForm.addEventListener("submit", async (event) => {
 				event.preventDefault();
-				statusMessage.textContent = "Your story is ready to publish";
+				
+				const title = document.getElementById("storyTitle").value;
+				const subtitle = document.getElementById("storySubtitle").value;
+				const body = storyBody.value;
+				const tags = document.getElementById("storyTags").value;
+				
+				if (!title || !body) {
+					statusMessage.textContent = "Title and body are required";
+					statusMessage.style.color = "red";
+					return;
+				}
+
+				try {
+					const submitBtn = storyForm.querySelector('button[type="submit"]');
+					submitBtn.disabled = true;
+					statusMessage.textContent = "Publishing...";
+					statusMessage.style.color = "orange";
+
+					const user = APIClient.getUser();
+					const response = await APIClient.createBlog(
+						user.user_id,
+						title,
+						body,
+						subtitle,
+						'', // cover_image_url - handle file upload separately if needed
+						tags
+					);
+
+					if (response.success) {
+						statusMessage.textContent = "Story published successfully! ✓";
+						statusMessage.style.color = "green";
+						
+						// Clear draft and form
+						localStorage.removeItem("inkflowDraft");
+						storyForm.reset();
+						
+						// Redirect to profile after 2 seconds
+						setTimeout(() => {
+							window.location.href = 'profile.html';
+						}, 2000);
+					}
+				} catch (error) {
+					statusMessage.textContent = "Error publishing story: " + (error.message || "Unknown error");
+					statusMessage.style.color = "red";
+					const submitBtn = storyForm.querySelector('button[type="submit"]');
+					submitBtn.disabled = false;
+				}
 			});
 
 			document.getElementById("profileToggle").addEventListener("click", (event) => {
 				event.stopPropagation();
 				document.getElementById("profileNav").classList.toggle("active");
 			});
+
+			// Logout functionality
+			const logoutLink = document.querySelector('a.nav-item[href="Login.html"]');
+			if (logoutLink) {
+				logoutLink.addEventListener('click', (e) => {
+					e.preventDefault();
+					APIClient.clearAuth();
+					window.location.href = 'Login.html';
+				});
+			}
 
 			document.addEventListener("click", (event) => {
 				if (!event.target.closest(".profile-menu-container")) {

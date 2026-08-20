@@ -81,71 +81,8 @@
     <main>
       <section class="blog-section mt-5">
         <div class="container">
-          <div class="row">
-            <div class="col-md-6 col-sm-12">
-              <div class="card bg-dark text-white">
-                <img src="./assets/images/backgrounds/download (1).jpg" class="card-img" alt="..." />
-                <div class="card-img-overlay">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <p class="card-text">Last updated 3 mins ago</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-sm-12">
-              <div class="card bg-dark text-white">
-                <img src="./assets/images/backgrounds/download (2).jpg" class="card-img" alt="..." />
-                <div class="card-img-overlay">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <p class="card-text">Last updated 3 mins ago</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6 col-sm-12 mt-3">
-              <div class="card bg-dark text-white">
-                <img src="./assets/images/backgrounds/download (3).jpg" class="card-img" alt="..." />
-                <div class="card-img-overlay">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <p class="card-text">Last updated 3 mins ago</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-sm-12 mt-3">
-              <div class="card bg-dark text-white">
-                <img src="./assets/images/backgrounds/download (4).jpg" class="card-img" alt="..." />
-                <div class="card-img-overlay">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <p class="card-text">Last updated 3 mins ago</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6 col-sm-12 mt-3">
-              <div class="card bg-dark text-white">
-                <img src="./assets/images/backgrounds/Fujifilm Instax Mini EVO Hybrid Instant Camera.jpg" class="card-img" alt="..." />
-                <div class="card-img-overlay">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <p class="card-text">Last updated 3 mins ago</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-6 col-sm-12 mt-3">
-              <div class="card bg-dark text-white">
-                <img src="./assets/images/backgrounds/I travel once every two months.jpg" class="card-img" alt="..." />
-                <div class="card-img-overlay">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <p class="card-text">Last updated 3 mins ago</p>
-                </div>
-              </div>
-            </div>
+          <div class="row" id="blogGrid">
+            <div class="col-12 text-center" id="blogStatus">Loading stories...</div>
           </div>
         </div>
       </section>
@@ -159,6 +96,73 @@
         </div>
       </div>
     </footer>
+    <script src="./js/api-client.js"></script>
     <script src="./js/script.js"></script>
+    <script>
+      // Check if user is authenticated on load
+      document.addEventListener('DOMContentLoaded', function() {
+        const signinBtn = document.getElementById('signinBtn');
+        if (APIClient.isAuthenticated()) {
+          const user = APIClient.getUser();
+          signinBtn.textContent = user ? user.username : 'Dashboard';
+          signinBtn.href = 'pages/profile.html';
+          signinBtn.classList.remove('btn-primary');
+          signinBtn.classList.add('btn-secondary');
+        }
+
+        loadBlogs();
+      });
+
+      async function loadBlogs() {
+        const blogGrid = document.getElementById('blogGrid');
+        try {
+          const response = await APIClient.getAllBlogs(20, 0);
+          if (!response.success || !response.blogs || response.blogs.length === 0) {
+            blogGrid.innerHTML = '<div class="col-12 text-center"><p>No stories have been published yet.</p></div>';
+            return;
+          }
+
+          blogGrid.innerHTML = response.blogs.map((blog, index) => {
+            const preview = (blog.body || '').trim().slice(0, 180);
+            const published = blog.created_at ? new Date(blog.created_at).toLocaleDateString() : '';
+            return `
+              <div class="col-md-6 col-sm-12 mb-4">
+                <a class="card h-100 text-decoration-none text-reset" href="pages/view_blog.html?blog_id=${encodeURIComponent(blog.blog_id)}">
+                  <img src="${escapeHtml(blog.cover_image_url || getFallbackImage(index))}" class="card-img-top" style="height: 220px; object-fit: cover;" alt="${escapeHtml(blog.title || 'Blog post')}" />
+                  <div class="card-body">
+                    <p class="text-muted mb-2">By ${escapeHtml(blog.full_name || blog.username || 'InkFlow writer')}</p>
+                    <h5 class="card-title">${escapeHtml(blog.title || 'Untitled story')}</h5>
+                    <p class="card-text">${escapeHtml(blog.subtitle || preview)}</p>
+                    <p class="card-text"><small class="text-muted">${escapeHtml(published)}</small></p>
+                  </div>
+                </a>
+              </div>`;
+          }).join('');
+        } catch (error) {
+          console.error('Failed to load blogs:', error);
+          blogGrid.innerHTML = '<div class="col-12 text-center"><p>Stories are temporarily unavailable.</p></div>';
+        }
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (character) => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+        }[character]));
+      }
+
+      function getFallbackImage(index) {
+        const images = [
+          './assets/images/backgrounds/download (1).jpg',
+          './assets/images/backgrounds/download (2).jpg',
+          './assets/images/backgrounds/download (3).jpg',
+          './assets/images/backgrounds/download (4).jpg',
+          './assets/images/backgrounds/journaling through everything.jpg',
+          './assets/images/backgrounds/I travel once every two months.jpg',
+          './assets/images/backgrounds/Fujifilm Instax Mini EVO Hybrid Instant Camera.jpg',
+          './assets/images/backgrounds/download.jpg'
+        ];
+        return images[index % images.length];
+      }
+    </script>
   </body>
 </html>

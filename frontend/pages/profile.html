@@ -27,7 +27,7 @@
             </a>
           </div>
           <div class="col-md-6 col-sm-12">
-            <form class="search-bar d-flex align-items-center" action="search_page.html" method="get">
+            <form class="search-bar d-flex align-items-center" id="searchForm">
               <input id="profileSearchInput" class="form-control me-2" name="q" type="search" placeholder="Search stories" aria-label="Search stories" />
               <button type="submit" class="profile-search-button" aria-label="Search">
                 <img src="../assets/images/icons/search-svgrepo-com.svg" alt="" width="20" height="20" />
@@ -39,6 +39,7 @@
             <a href="user_profile.html" aria-label="Open user profile">
               <img src="../assets/images/icons/profile-default-svgrepo-com.svg" alt="Profile" class="profile-logo" style="width: 40px; height: 40px; border-radius: 50%; cursor: pointer" />
             </a>
+            <button class="btn btn-outline-danger btn-sm" id="logoutBtn">Logout</button>
           </div>
         </div>
       </div>
@@ -56,9 +57,9 @@
     <!-- Right Profile Sidebar -->
     <aside class="profile-sidebar">
       <div class="profile-card">
-        <img src="../assets/images/icons/profile-default-svgrepo-com.svg" alt="Profile" class="profile-image" />
-        <h3 class="profile-name">User Name</h3>
-        <p class="profile-bio">Your bio goes here</p>
+        <img id="sidebarAvatar" src="../assets/images/icons/profile-default-svgrepo-com.svg" alt="Profile" class="profile-image" />
+        <h3 id="sidebarName" class="profile-name">User Name</h3>
+        <p id="sidebarBio" class="profile-bio">Your bio goes here</p>
         <a href="user_profile.html" class="btn btn-primary btn-edit">View Profile</a>
       </div>
     </aside>
@@ -66,65 +67,14 @@
     <main>
       <section class="blog-section mt-5">
         <div class="container">
-          <div class="modern-card mb-4">
-            <div class="card-image-wrapper">
-              <img src="../assets/images/backgrounds/download (1).jpg" class="card-image" alt="Blog post" />
-            </div>
-            <div class="card-content">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <span class="card-date">Last updated 3 mins ago</span>
-            </div>
+          <div id="loadingMessage" style="text-align: center; padding: 40px;">
+            <p>Loading stories...</p>
           </div>
-          <div class="modern-card mb-4">
-            <div class="card-image-wrapper">
-              <img src="../assets/images/backgrounds/download (2).jpg" class="card-image" alt="Blog post" />
-            </div>
-            <div class="card-content">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <span class="card-date">Last updated 3 mins ago</span>
-            </div>
+          <div id="blogsContainer">
+            <!-- Blogs will be loaded here dynamically -->
           </div>
-          <div class="modern-card mb-4">
-            <div class="card-image-wrapper">
-              <img src="../assets/images/backgrounds/download (3).jpg" class="card-image" alt="Blog post" />
-            </div>
-            <div class="card-content">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <span class="card-date">Last updated 3 mins ago</span>
-            </div>
-          </div>
-          <div class="modern-card mb-4">
-            <div class="card-image-wrapper">
-              <img src="../assets/images/backgrounds/download (4).jpg" class="card-image" alt="Blog post" />
-            </div>
-            <div class="card-content">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <span class="card-date">Last updated 3 mins ago</span>
-            </div>
-          </div>
-          <div class="modern-card mb-4">
-            <div class="card-image-wrapper">
-              <img src="../assets/images/backgrounds/Fujifilm Instax Mini EVO Hybrid Instant Camera.jpg" class="card-image" alt="Blog post" />
-            </div>
-            <div class="card-content">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <span class="card-date">Last updated 3 mins ago</span>
-            </div>
-          </div>
-          <div class="modern-card mb-4">
-            <div class="card-image-wrapper">
-              <img src="../assets/images/backgrounds/I travel once every two months.jpg" class="card-image" alt="Blog post" />
-            </div>
-            <div class="card-content">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-              <span class="card-date">Last updated 3 mins ago</span>
-            </div>
+          <div id="noBlogs" style="display:none; text-align: center; padding: 40px;">
+            <p class="text-muted">No stories found. <a href="story.html">Create your first story!</a></p>
           </div>
         </div>
       </section>
@@ -138,11 +88,86 @@
         </div>
       </div>
     </footer>
-    <script src="../js/script.js"></script>
+    <script src="../js/api-client.js"></script>
     <script>
-      document.getElementById("profileSearchInput").addEventListener("click", function () {
-        window.location.href = "search_page.html";
+      document.addEventListener('DOMContentLoaded', async () => {
+        // Check authentication
+        if (!APIClient.isAuthenticated()) {
+          window.location.href = 'Login.html';
+          return;
+        }
+
+        try {
+          const user = APIClient.getUser();
+          
+          // Update sidebar with user info
+          document.getElementById('sidebarName').textContent = user.full_name || user.username;
+          document.getElementById('sidebarBio').textContent = user.bio || 'Your bio goes here';
+          if (user.avatar_url) {
+            document.getElementById('sidebarAvatar').src = user.avatar_url;
+          }
+
+          // Load blogs
+          const response = await APIClient.getAllBlogs(20, 0);
+          const blogsContainer = document.getElementById('blogsContainer');
+          const noBlogs = document.getElementById('noBlogs');
+          const loadingMessage = document.getElementById('loadingMessage');
+
+          loadingMessage.style.display = 'none';
+
+          if (response.success && response.blogs.length > 0) {
+            blogsContainer.innerHTML = response.blogs.map((blog, index) => `
+              <a class="modern-card mb-4 text-decoration-none" href="view_blog.html?blog_id=${encodeURIComponent(blog.blog_id)}">
+                <div class="card-image-wrapper">
+                  <img src="${blog.cover_image_url || getFallbackImage(index)}" class="card-image" alt="${blog.title || 'Blog post'}" />
+                </div>
+                <div class="card-content">
+                  <h5 class="card-title">${blog.title}</h5>
+                  <p class="card-text">${blog.subtitle || blog.body.substring(0, 100) + '...'}</p>
+                  <small class="text-muted">By <strong>${blog.full_name}</strong></small><br />
+                  <span class="card-date">${new Date(blog.created_at).toLocaleDateString()}</span>
+                </div>
+              </a>
+            `).join('');
+          } else {
+            noBlogs.style.display = 'block';
+          }
+        } catch (error) {
+          console.error('Error loading blogs:', error);
+          document.getElementById('loadingMessage').innerHTML = '<p class="text-danger">Error loading stories. Please try again.</p>';
+        }
+      });
+
+      function getFallbackImage(index) {
+        const images = [
+          '../assets/images/backgrounds/download (1).jpg',
+          '../assets/images/backgrounds/download (2).jpg',
+          '../assets/images/backgrounds/download (3).jpg',
+          '../assets/images/backgrounds/download (4).jpg',
+          '../assets/images/backgrounds/journaling through everything.jpg',
+          '../assets/images/backgrounds/I travel once every two months.jpg',
+          '../assets/images/backgrounds/Fujifilm Instax Mini EVO Hybrid Instant Camera.jpg',
+          '../assets/images/backgrounds/download.jpg'
+        ];
+        return images[index % images.length];
+      }
+
+      // Handle search
+      document.getElementById('searchForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const query = document.getElementById('profileSearchInput').value;
+        if (query.trim()) {
+          window.location.href = `search_page.html?q=${encodeURIComponent(query)}`;
+        }
+      });
+
+      // Handle logout
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        APIClient.clearAuth();
+        window.location.href = 'Login.html';
       });
     </script>
+  </body>
+</html>
   </body>
 </html>

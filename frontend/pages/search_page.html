@@ -84,60 +84,7 @@
 				</div>
 
 				<section class="results-grid" id="resultsGrid" aria-label="Search results">
-					<article class="search-card" data-search="travel journeys adventure life">
-						<img src="../assets/images/backgrounds/I travel once every two months.jpg" alt="A journey through a new place" />
-						<div class="search-card-content">
-							<span class="result-category">Travel</span>
-							<h3>Why I Travel Once Every Two Months</h3>
-							<p>Small journeys can change the way you see the everyday.</p>
-							<span class="result-meta">5 min read · 3 days ago</span>
-						</div>
-					</article>
-					<article class="search-card" data-search="camera photography creativity technology">
-						<img src="../assets/images/backgrounds/Fujifilm Instax Mini EVO Hybrid Instant Camera.jpg" alt="Fujifilm instant camera" />
-						<div class="search-card-content">
-							<span class="result-category">Photography</span>
-							<h3>Making Room for the Perfect Frame</h3>
-							<p>A closer look at the tools that help ordinary moments last.</p>
-							<span class="result-meta">7 min read · 1 week ago</span>
-						</div>
-					</article>
-					<article class="search-card" data-search="journaling writing reflection life habits">
-						<img src="../assets/images/backgrounds/journaling through everything.jpg" alt="A journal and writing desk" />
-						<div class="search-card-content">
-							<span class="result-category">Writing</span>
-							<h3>Journaling Through Everything</h3>
-							<p>What happens when you give your thoughts somewhere to land?</p>
-							<span class="result-meta">4 min read · 2 weeks ago</span>
-						</div>
-					</article>
-					<article class="search-card" data-search="ideas design creativity life">
-						<img src="../assets/images/backgrounds/download (1).jpg" alt="Creative ideas in progress" />
-						<div class="search-card-content">
-							<span class="result-category">Ideas</span>
-							<h3>Beginning Before You Feel Ready</h3>
-							<p>A practical note on making progress before certainty arrives.</p>
-							<span class="result-meta">6 min read · 2 weeks ago</span>
-						</div>
-					</article>
-					<article class="search-card" data-search="travel places photography moments">
-						<img src="../assets/images/backgrounds/download (2).jpg" alt="A quiet travel destination" />
-						<div class="search-card-content">
-							<span class="result-category">Travel</span>
-							<h3>Postcards from the Quiet Places</h3>
-							<p>The best discoveries are often found just beyond the itinerary.</p>
-							<span class="result-meta">8 min read · 3 weeks ago</span>
-						</div>
-					</article>
-					<article class="search-card" data-search="life reflection stories people">
-						<img src="../assets/images/backgrounds/download (3).jpg" alt="A person looking toward the horizon" />
-						<div class="search-card-content">
-							<span class="result-category">Life</span>
-							<h3>The Stories We Carry Forward</h3>
-							<p>Some lessons become clearer when we finally tell them aloud.</p>
-							<span class="result-meta">5 min read · 1 month ago</span>
-						</div>
-					</article>
+					<!-- Results will be loaded here -->
 				</section>
 
 				<div class="empty-state" id="emptyState" hidden>
@@ -147,6 +94,7 @@
 			</div>
 		</main>
 
+		<script src="../js/api-client.js"></script>
 		<script>
 			const searchForm = document.getElementById("searchForm");
 			const headerSearchForm = document.getElementById("headerSearchForm");
@@ -155,43 +103,94 @@
 			const resultSummary = document.getElementById("resultSummary");
 			const resultsGrid = document.getElementById("resultsGrid");
 			const emptyState = document.getElementById("emptyState");
-			const cards = [...document.querySelectorAll(".search-card")];
-
-			function showResults(query) {
-				const normalizedQuery = query.trim().toLowerCase();
-				let visibleCount = 0;
-
-				cards.forEach((card) => {
-					const matches = !normalizedQuery || card.dataset.search.includes(normalizedQuery);
-					card.hidden = !matches;
-					if (matches) visibleCount += 1;
-				});
-
-				resultSummary.textContent = normalizedQuery
-					? `${visibleCount} ${visibleCount === 1 ? "story" : "stories"} for “${query.trim()}”`
-					: "Showing all stories";
-				resultsGrid.hidden = visibleCount === 0;
-				emptyState.hidden = visibleCount !== 0;
-				searchInput.value = query;
-				headerSearchInput.value = query;
-			}
 
 			searchForm.addEventListener("submit", (event) => {
 				event.preventDefault();
-				showResults(searchInput.value);
+				performSearch(searchInput.value);
 			});
 
 			headerSearchForm.addEventListener("submit", (event) => {
 				event.preventDefault();
-				showResults(headerSearchInput.value);
+				performSearch(headerSearchInput.value);
 			});
 
 			document.querySelectorAll(".topic-chip").forEach((chip) => {
-				chip.addEventListener("click", () => showResults(chip.dataset.query));
+				chip.addEventListener("click", () => performSearch(chip.dataset.query));
 			});
 
 			const query = new URLSearchParams(window.location.search).get("q") || "";
-			showResults(query);
+			if (query) {
+				performSearch(query);
+			}
+
+			async function performSearch(query) {
+				try {
+					resultsGrid.innerHTML = '<div style="text-align: center; padding: 40px;">Searching...</div>';
+					emptyState.hidden = true;
+
+					if (!query.trim()) {
+						resultsGrid.innerHTML = '';
+						resultSummary.textContent = 'Showing all stories';
+						return;
+					}
+
+					const response = await APIClient.search(query, 'all', 50, 0);
+					
+					if (!response.success) {
+						throw new Error('Search failed');
+					}
+
+					const allResults = [];
+					
+					// Combine blogs and users results
+					if (response.results.blogs && response.results.blogs.length > 0) {
+						allResults.push(...response.results.blogs.map(blog => ({
+							type: 'blog',
+							...blog
+						})));
+					}
+
+					if (response.results.users && response.results.users.length > 0) {
+						allResults.push(...response.results.users.map(user => ({
+							type: 'user',
+							...user
+						})));
+					}
+
+					if (allResults.length === 0) {
+						resultsGrid.innerHTML = '';
+						emptyState.hidden = false;
+						resultSummary.textContent = `No results for "${query}"`;
+						return;
+					}
+
+					// Display blog results
+					resultsGrid.innerHTML = allResults
+						.filter(item => item.type === 'blog')
+		                .map(blog => `
+									<a class="search-card text-decoration-none" href="view_blog.html?blog_id=${encodeURIComponent(blog.blog_id)}">
+								<img src="${blog.cover_image_url || '../assets/images/backgrounds/download (1).jpg'}" alt="${blog.title}" />
+								<div class="search-card-content">
+									<span class="result-category">${blog.tags || 'Blog'}</span>
+									<h3>${blog.title}</h3>
+									<p>${blog.subtitle || blog.body.substring(0, 100) + '...'}</p>
+									<small class="text-muted">By <strong>${blog.full_name}</strong></small><br />
+									<span class="result-meta">${Math.ceil(blog.body.split(/\s+/).length / 200)} min read · ${new Date(blog.created_at).toLocaleDateString()}</span>
+								</div>
+							</a>
+						`).join('');
+
+					resultSummary.textContent = `${allResults.filter(i => i.type === 'blog').length} ${allResults.filter(i => i.type === 'blog').length === 1 ? "story" : "stories"} for "${query}"`;
+					emptyState.hidden = true;
+
+					searchInput.value = query;
+					headerSearchInput.value = query;
+				} catch (error) {
+					console.error('Search error:', error);
+					resultsGrid.innerHTML = '<div style="text-align: center; padding: 40px; color: red;">Error performing search. Please try again.</div>';
+				}
+			}
+
 
 			document.getElementById("profileToggle").addEventListener("click", (event) => {
 				event.stopPropagation();
@@ -203,6 +202,16 @@
 					document.getElementById("profileNav").classList.remove("active");
 				}
 			});
+
+			// Logout functionality
+			const logoutLink = document.querySelector('a.nav-item[href="Login.html"]');
+			if (logoutLink) {
+				logoutLink.addEventListener('click', (e) => {
+					e.preventDefault();
+					APIClient.clearAuth();
+					window.location.href = 'Login.html';
+				});
+			}
 		</script>
 	</body>
 </html>

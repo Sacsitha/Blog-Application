@@ -142,7 +142,7 @@
 		</main>
 
 		<div class="profile-modal" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle" hidden>
-			<div class="modal-backdrop" data-close-modal></div>
+			<div class="profile-modal-backdrop"></div>
 			<section class="profile-modal-card">
 				<div class="modal-heading">
 					<div>
@@ -197,7 +197,91 @@
 			</section>
 		</div>
 
+		<div class="profile-modal" id="blogEditModal" role="dialog" aria-modal="true" aria-labelledby="blogEditHeading" hidden>
+			<div class="profile-modal-backdrop"></div>
+			<section class="profile-modal-card">
+				<div class="modal-heading">
+					<div>
+						<p class="profile-eyebrow">Your story</p>
+						<h2 id="blogEditHeading">Edit story</h2>
+					</div>
+					<button class="modal-close" type="button" aria-label="Close edit story" data-close-blog-modal>&times;</button>
+				</div>
+				<form id="blogEditForm">
+					<input id="editBlogId" type="hidden" />
+					<div class="profile-form-field"><label for="editBlogTitle">Title</label><input id="editBlogTitle" maxlength="120" required /></div>
+					<div class="profile-form-field"><label for="editBlogSubtitle">Subtitle</label><input id="editBlogSubtitle" maxlength="180" /></div>
+					<div class="profile-form-field"><label for="editBlogBody">Story</label><textarea id="editBlogBody" rows="8" required></textarea></div>
+					<div class="modal-actions"><span id="blogEditStatus" role="status"></span><button class="btn btn-primary" type="submit">Save story</button></div>
+				</form>
+			</section>
+		</div>
+
+		<script src="../js/api-client.js"></script>
 		<script>
+			let currentUser = null;
+
+			document.addEventListener('DOMContentLoaded', async () => {
+				// Check authentication
+				if (!APIClient.isAuthenticated()) {
+					window.location.href = 'Login.html';
+					return;
+				}
+
+				try {
+					currentUser = APIClient.getUser();
+					
+					// Load user profile with interests
+					const profileResponse = await APIClient.getUserProfile(currentUser.user_id);
+					currentUser = profileResponse.user;
+
+					// Update profile display
+					document.getElementById('profileAvatar').src = currentUser.avatar_url || '../assets/images/icons/profile-default-svgrepo-com.svg';
+					document.getElementById('profileName').textContent = currentUser.full_name;
+					document.getElementById('profileUsername').textContent = '@' + currentUser.username;
+					document.getElementById('profileBio').textContent = currentUser.bio || 'No bio added yet.';
+					document.getElementById('profileEmail').textContent = currentUser.email;
+
+					// Update form fields
+					document.getElementById('nameInput').value = currentUser.full_name;
+					document.getElementById('usernameInput').value = currentUser.username;
+					document.getElementById('bioInput').value = currentUser.bio || '';
+					document.getElementById('emailInput').value = currentUser.email;
+					document.getElementById('modalAvatarPreview').src = currentUser.avatar_url || '../assets/images/icons/profile-default-svgrepo-com.svg';
+
+					// Load user's blogs
+					const blogsResponse = await APIClient.getUserBlogs(currentUser.user_id, 10, 0);
+					if (blogsResponse.success && blogsResponse.blogs.length > 0) {
+						const activityList = document.querySelector('.activity-list');
+						activityList.innerHTML = blogsResponse.blogs.map(blog => `
+							<article class="activity-item">
+								<div class="activity-marker"></div>
+								<div>
+									<p>Published <strong>${blog.title}</strong></p>
+									<span>${new Date(blog.created_at).toLocaleDateString()} · ${Math.ceil(blog.body.split(/\s+/).length / 200)} min read</span>
+									<button type="button" class="btn btn-sm btn-outline-primary edit-blog-button" data-blog-id="${blog.blog_id}">Edit story</button>
+								</div>
+							</article>
+						`).join('');
+
+						activityList.querySelectorAll('.edit-blog-button').forEach((button) => {
+							button.addEventListener('click', () => openBlogEditor(
+								blogsResponse.blogs.find((blog) => String(blog.blog_id) === button.dataset.blogId)
+							));
+						});
+
+						// Update stats
+						document.querySelectorAll('.stat-item')[0].innerHTML = `
+							<strong>${blogsResponse.blogs.length}</strong>
+							<span>Stories</span>
+						`;
+					}
+				} catch (error) {
+					console.error('Error loading profile:', error);
+					alert('Error loading profile. Please try again.');
+				}
+			});
+
 			const editModal = document.getElementById("editModal");
 			const profileForm = document.getElementById("profileForm");
 			const avatarInput = document.getElementById("avatarInput");
@@ -220,7 +304,9 @@
 			});
 
 			document.addEventListener("keydown", (event) => {
-				if (event.key === "Escape" && !editModal.hidden) closeModal();
+				if (event.key !== "Escape") return;
+				if (!editModal.hidden) closeModal();
+				if (!blogEditModal.hidden) closeBlogEditor();
 			});
 
 			avatarInput.addEventListener("change", () => {
@@ -231,29 +317,99 @@
 				modalAvatarPreview.src = imageUrl;
 			});
 
-			profileForm.addEventListener("submit", (event) => {
+			profileForm.addEventListener("submit", async (event) => {
 				event.preventDefault();
+				if (!currentUser || !currentUser.user_id) {
+					document.getElementById("profileStatus").textContent = "Your session has expired. Please log in again.";
+					return;
+				}
 				const name = document.getElementById("nameInput").value.trim();
 				const username = document.getElementById("usernameInput").value.trim().replace(/^@/, "");
 				const bio = document.getElementById("bioInput").value.trim();
 				const email = document.getElementById("emailInput").value.trim();
-				const location = document.getElementById("locationInput").value.trim();
-				const website = document.getElementById("websiteInput").value.trim();
+				const statusEl = document.getElementById("profileStatus");
 
-				document.getElementById("profileName").textContent = name;
-				document.getElementById("profileUsername").textContent = `@${username}`;
-				document.getElementById("profileBio").textContent = bio || "No bio added yet.";
-				document.getElementById("profileEmail").textContent = email;
-				document.getElementById("profileLocation").textContent = location || "Not specified";
-				const websiteLink = document.getElementById("profileWebsite");
-				websiteLink.textContent = website ? website.replace(/^https?:\/\//, "") : "Not specified";
-				websiteLink.href = website || "#";
-				document.getElementById("profileStatus").textContent = "Profile updated";
+				try {
+					statusEl.textContent = "Saving...";
 
-				window.setTimeout(() => {
-					document.getElementById("profileStatus").textContent = "";
-					closeModal();
-				}, 700);
+					const updateData = {
+						username,
+						full_name: name,
+						bio: bio,
+						email: email
+					};
+
+					const response = await APIClient.updateProfile(currentUser.user_id, updateData);
+
+					if (response.success) {
+						// Update local user data
+						currentUser = response.user;
+						APIClient.setUser(currentUser);
+
+						// Update profile display
+						document.getElementById("profileName").textContent = name;
+						document.getElementById("profileUsername").textContent = `@${username}`;
+						document.getElementById("profileBio").textContent = bio || "No bio added yet.";
+						document.getElementById("profileEmail").textContent = email;
+						
+						statusEl.textContent = "Profile updated ✓";
+						statusEl.style.color = "green";
+
+						setTimeout(() => {
+							statusEl.textContent = "";
+							statusEl.style.color = "";
+							closeModal();
+						}, 1500);
+					}
+				} catch (error) {
+					statusEl.textContent = "Error: " + (error.message || "Failed to update profile");
+					statusEl.style.color = "red";
+				}
+			});
+
+			const blogEditModal = document.getElementById("blogEditModal");
+			const blogEditForm = document.getElementById("blogEditForm");
+
+			function openBlogEditor(blog) {
+				if (!blog) return;
+				document.getElementById("editBlogId").value = blog.blog_id;
+				document.getElementById("editBlogTitle").value = blog.title || "";
+				document.getElementById("editBlogSubtitle").value = blog.subtitle || "";
+				document.getElementById("editBlogBody").value = blog.body || "";
+				document.getElementById("blogEditStatus").textContent = "";
+				blogEditModal.hidden = false;
+				document.body.classList.add("modal-open");
+			}
+
+			function closeBlogEditor() {
+				blogEditModal.hidden = true;
+				document.body.classList.remove("modal-open");
+			}
+
+			document.querySelectorAll("[data-close-blog-modal]").forEach((element) => {
+				element.addEventListener("click", closeBlogEditor);
+			});
+
+			blogEditForm.addEventListener("submit", async (event) => {
+				event.preventDefault();
+				const status = document.getElementById("blogEditStatus");
+				status.textContent = "Saving...";
+				try {
+					const response = await APIClient.updateBlog(
+						document.getElementById("editBlogId").value,
+						currentUser.user_id,
+						{
+							title: document.getElementById("editBlogTitle").value.trim(),
+							subtitle: document.getElementById("editBlogSubtitle").value.trim(),
+							body: document.getElementById("editBlogBody").value.trim()
+						}
+					);
+					if (!response.success) throw new Error(response.error || "Unable to update story");
+					status.textContent = "Story updated";
+					setTimeout(() => window.location.reload(), 600);
+				} catch (error) {
+					status.textContent = error.message || "Unable to update story";
+				}
 			});
 
 			document.getElementById("profileToggle").addEventListener("click", (event) => {
@@ -266,6 +422,16 @@
 					document.getElementById("profileNav").classList.remove("active");
 				}
 			});
+
+			// Logout functionality
+			const logoutLink = document.querySelector('a.nav-item[href="Login.html"]');
+			if (logoutLink) {
+				logoutLink.addEventListener('click', (e) => {
+					e.preventDefault();
+					APIClient.clearAuth();
+					window.location.href = 'Login.html';
+				});
+			}
 		</script>
 	</body>
 </html>

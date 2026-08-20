@@ -22,20 +22,29 @@
       <div class="login-box">
         <h2>Sign Up</h2>
         <p class="text-muted">Welcome to <a href="../index.html" class="color">InkFlow</a></p>
-        <form>
+        <form id="signupForm">
           <div class="mb-3">
-            <label for="name" class="form-label">Username</label>
-            <input type="text" class="form-control" id="name" placeholder="Enter your username" />
+            <label for="fullname" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="fullname" placeholder="Enter your full name" required />
+          </div>
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" placeholder="Enter your username" required />
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter your email" required />
           </div>
           <div class="mb-3">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" placeholder="Enter your password" />
+            <input type="password" class="form-control" id="password" placeholder="Enter your password" required />
           </div>
           <div class="mb-3">
-            <label for="confirm-password" class="form-label">Confirm Password</label>
-            <input type="password" class="form-control" id="confirm-password" placeholder="Confirm your password" />
+            <label for="confirmpassword" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmpassword" placeholder="Confirm your password" required />
           </div>
-          <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#interestModal">Sign Up</button>
+          <div id="errorMessage" class="mb-3 alert alert-danger" style="display:none;"></div>
+          <button type="button" class="btn btn-primary w-100" id="nextBtn" data-bs-toggle="modal" data-bs-target="#interestModal">Sign Up</button>
           <div class="mt-3">
             <p class="text-muted">Already have an account? <a href="Login.html" class="text-danger">Login</a></p>
           </div>
@@ -51,55 +60,153 @@
             <h5 class="modal-title" id="interestModalLabel">Select Your Interests</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body" id="interestsContainer">
             <p class="text-muted mb-3">What topics are you interested in?</p>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="interest-tech" name="interests" value="Technology" />
-              <label class="form-check-label" for="interest-tech">Technology</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="interest-business" name="interests" value="Business" />
-              <label class="form-check-label" for="interest-business">Business</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="interest-health" name="interests" value="Health" />
-              <label class="form-check-label" for="interest-health">Health & Wellness</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="interest-entertainment" name="interests" value="Entertainment" />
-              <label class="form-check-label" for="interest-entertainment">Entertainment</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="interest-sports" name="interests" value="Sports" />
-              <label class="form-check-label" for="interest-sports">Sports</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="interest-travel" name="interests" value="Travel" />
-              <label class="form-check-label" for="interest-travel">Travel</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="interest-food" name="interests" value="Food" />
-              <label class="form-check-label" for="interest-food">Food & Cooking</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="interest-education" name="interests" value="Education" />
-              <label class="form-check-label" for="interest-education">Education</label>
-            </div>
-            <p class="text-danger mb-3">Choose atleast one</p>
+            <!-- Interests will be loaded dynamically -->
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" onclick="completeSignUp()">Complete Sign Up</button>
+            <button type="button" class="btn btn-primary" id="completeSignUpBtn">Complete Sign Up</button>
           </div>
         </div>
       </div>
     </div>
 
+    <script src="../js/api-client.js"></script>
     <script>
-      function completeSignUp() {
-        const selectedInterests = Array.from(document.querySelectorAll('input[name="interests"]:checked')).map(cb => cb.value);
-        console.log('Selected interests:', selectedInterests);
-        // Add your sign-up logic here
-        alert('Sign up successful with interests: ' + selectedInterests.join(', '));
-      }
+      let signupFormData = {};
+      let interestMap = {};
+
+      // Load interests on page load
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          const response = await APIClient.getInterests();
+          if (response.success) {
+            const container = document.getElementById('interestsContainer');
+            container.innerHTML = '<p class="text-muted mb-3">What topics are you interested in?</p>';
+            
+            response.interests.forEach(interest => {
+              interestMap[interest.name] = interest.interest_id;
+              const checkboxHTML = `
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="interest-${interest.interest_id}" 
+                         data-interest-id="${interest.interest_id}" name="interests" value="${interest.name}" />
+                  <label class="form-check-label" for="interest-${interest.interest_id}">${interest.name}</label>
+                </div>
+              `;
+              container.innerHTML += checkboxHTML;
+            });
+            container.innerHTML += '<p class="text-danger mb-3 mt-3">Choose at least one</p>';
+          } else {
+            throw new Error(response.error || 'No interests were returned');
+          }
+        } catch (error) {
+          console.error('Failed to load interests:', error);
+          document.getElementById('interestsContainer').innerHTML =
+            '<p class="text-danger">Unable to load interests. Please check that the backend and database are running, then refresh this page.</p>';
+        }
+      });
+
+      // Handle next button (validate and open modal)
+      document.getElementById('nextBtn').addEventListener('click', (e) => {
+        const fullname = document.getElementById('fullname').value;
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmpassword = document.getElementById('confirmpassword').value;
+        const errorMessage = document.getElementById('errorMessage');
+        
+        // Validation
+        if (!fullname || !username || !email || !password || !confirmpassword) {
+          errorMessage.textContent = 'All fields are required';
+          errorMessage.style.display = 'block';
+          e.preventDefault();
+          return;
+        }
+
+        if (password !== confirmpassword) {
+          errorMessage.textContent = 'Passwords do not match';
+          errorMessage.style.display = 'block';
+          e.preventDefault();
+          return;
+        }
+
+        if (password.length < 6) {
+          errorMessage.textContent = 'Password must be at least 6 characters';
+          errorMessage.style.display = 'block';
+          e.preventDefault();
+          return;
+        }
+
+        // Store form data for later use
+        signupFormData = {
+          fullname,
+          username,
+          email,
+          password
+        };
+
+        errorMessage.style.display = 'none';
+      });
+
+      // Handle complete signup
+      document.getElementById('completeSignUpBtn').addEventListener('click', async () => {
+        const fullname = document.getElementById('fullname').value.trim();
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmpassword = document.getElementById('confirmpassword').value;
+        const errorMessage = document.getElementById('errorMessage');
+
+        if (!fullname || !username || !email || !password || !confirmpassword) {
+          errorMessage.textContent = 'All fields are required';
+          errorMessage.style.display = 'block';
+          return;
+        }
+
+        if (password !== confirmpassword) {
+          errorMessage.textContent = 'Passwords do not match';
+          errorMessage.style.display = 'block';
+          return;
+        }
+
+        const selectedInterests = Array.from(
+          document.querySelectorAll('input[name="interests"]:checked')
+        ).map(cb => parseInt(cb.dataset.interestId));
+
+        if (selectedInterests.length === 0) {
+          alert('Please select at least one interest');
+          return;
+        }
+
+        try {
+          const completeBtn = document.getElementById('completeSignUpBtn');
+          completeBtn.disabled = true;
+          completeBtn.textContent = 'Creating account...';
+
+          // Call signup API
+          const response = await APIClient.signup(
+            username,
+            password,
+            fullname,
+            email,
+            selectedInterests
+          );
+
+          if (response.success) {
+            // Save user and token
+            APIClient.setUser(response.user);
+            APIClient.setToken(response.token);
+
+            // Redirect to profile page
+            alert('Account created successfully!');
+            window.location.href = 'profile.html';
+          }
+        } catch (error) {
+          alert(error.message || 'Sign up failed. Please try again.');
+          const completeBtn = document.getElementById('completeSignUpBtn');
+          completeBtn.disabled = false;
+          completeBtn.textContent = 'Complete Sign Up';
+        }
+      });
     </script>

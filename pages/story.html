@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Write a Story | InkFlow</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+			crossorigin="anonymous"
+		/>
+		<link rel="stylesheet" href="../css/profile.css" />
+		<link rel="stylesheet" href="../css/story.css" />
+		<style>
+
+		</style>
+	</head>
+	<body>
+		<header class="navbar-header">
+			<div class="container-fluid">
+				<div class="row align-items-center">
+					<div class="col-md-3 col-sm-12 d-flex align-items-center">
+							<a href="../index.html" aria-label="InkFlow home">
+								<img src="../assets/images/logo/logo.png" alt="InkFlow Logo" class="logo" />
+						</a>
+					</div>
+					<div class="col-md-6 col-sm-12">
+						<div class="search-bar d-flex align-items-center">
+							<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+									<img src="../assets/images/icons/search-svgrepo-com.svg" alt="Search Icon" width="20" height="20" />
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-12 d-flex justify-content-end align-items-center gap-3">
+						<span class="text-muted small">Draft</span>
+						<div class="profile-menu-container">
+									<img src="../assets/images/icons/profile-default-svgrepo-com.svg" alt="Profile" class="profile-logo" style="width: 40px; height: 40px; border-radius: 50%; cursor: pointer" id="profileToggle" />
+							<nav class="profile-vertical-nav" id="profileNav">
+								<a href="user_profile.html" class="nav-item">Edit Profile</a>
+								<a href="#" class="nav-item">Settings</a>
+								<a href="#" class="nav-item">Help</a>
+								<hr />
+								<a href="Login.html" class="nav-item">Logout</a>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<nav class="sidebar-nav" aria-label="Primary navigation">
+			<ul class="nav-list">
+				<li><a href="../index.html" class="nav-link">Home</a></li>
+				<li><a href="profile.html" class="nav-link">Profile</a></li>
+				<li><a href="story.html" class="nav-link active" aria-current="page">Stories</a></li>
+			</ul>
+		</nav>
+
+		<main class="story-main">
+			<div class="story-editor">
+				<div class="story-heading">
+					<h1>Create a new story</h1>
+					<p>Turn your ideas into something worth reading.</p>
+				</div>
+
+				<form id="storyForm">
+					<section class="editor-panel" aria-label="Story editor">
+						<label class="story-field-label" for="storyTitle">Title</label>
+						<input id="storyTitle" class="story-title-input" type="text" placeholder="Give your story a title" maxlength="120" required />
+
+						<label class="story-field-label mt-4" for="storySubtitle">Subtitle <span class="fw-normal text-muted">(optional)</span></label>
+						<input id="storySubtitle" class="story-subtitle-input" type="text" placeholder="Add a short introduction" maxlength="180" />
+
+						<label class="story-field-label mt-4" for="storyBody">Your story</label>
+						<textarea id="storyBody" class="story-body-input" placeholder="Start writing here..." maxlength="20000" required></textarea>
+						<div class="body-meta"><span id="wordCount">0 words</span></div>
+					</section>
+
+					<section class="story-options" aria-labelledby="storyOptionsTitle">
+						<h2 id="storyOptionsTitle">Story details</h2>
+						<div class="row g-3 align-items-end">
+							<div class="col-lg-7">
+								<label class="story-field-label" for="storyTags">Tags</label>
+								<input id="storyTags" class="story-tags-input" type="text" placeholder="travel, ideas, life" maxlength="120" />
+							</div>
+							<div class="col-lg-5">
+								<div class="cover-upload">
+									<img id="coverPreview" class="cover-preview" alt="Selected cover preview" />
+									<div class="upload-copy">
+										<strong>Add a cover image</strong>
+										<span>JPG, PNG, or GIF up to 10 MB</span>
+									</div>
+									<label class="upload-button" for="coverImage">Browse</label>
+									<input id="coverImage" type="file" accept="image/*" hidden />
+								</div>
+							</div>
+						</div>
+					</section>
+
+					<div class="editor-actions">
+						<span class="status-message" id="statusMessage" role="status"></span>
+						<div class="action-group">
+							<button class="draft-button" type="button" id="saveDraft">Save draft</button>
+							<button class="btn btn-primary" type="submit">Publish story</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</main>
+
+		<script>
+			const storyBody = document.getElementById("storyBody");
+			const wordCount = document.getElementById("wordCount");
+			const statusMessage = document.getElementById("statusMessage");
+			const coverImage = document.getElementById("coverImage");
+			const coverPreview = document.getElementById("coverPreview");
+
+			storyBody.addEventListener("input", () => {
+				const words = storyBody.value.trim() ? storyBody.value.trim().split(/\s+/).length : 0;
+				wordCount.textContent = `${words} ${words === 1 ? "word" : "words"}`;
+			});
+
+			coverImage.addEventListener("change", () => {
+				const [file] = coverImage.files;
+				if (!file) return;
+				coverPreview.src = URL.createObjectURL(file);
+				coverPreview.classList.add("visible");
+				statusMessage.textContent = "Cover image added";
+			});
+
+			document.getElementById("saveDraft").addEventListener("click", () => {
+				localStorage.setItem("inkflowDraft", JSON.stringify({
+					title: document.getElementById("storyTitle").value,
+					subtitle: document.getElementById("storySubtitle").value,
+					body: storyBody.value,
+					tags: document.getElementById("storyTags").value
+				}));
+				statusMessage.textContent = "Draft saved";
+			});
+
+			document.getElementById("storyForm").addEventListener("submit", (event) => {
+				event.preventDefault();
+				statusMessage.textContent = "Your story is ready to publish";
+			});
+
+			document.getElementById("profileToggle").addEventListener("click", (event) => {
+				event.stopPropagation();
+				document.getElementById("profileNav").classList.toggle("active");
+			});
+
+			document.addEventListener("click", (event) => {
+				if (!event.target.closest(".profile-menu-container")) {
+					document.getElementById("profileNav").classList.remove("active");
+				}
+			});
+		</script>
+	</body>
+</html>

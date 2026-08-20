@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>User Profile | InkFlow</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+			crossorigin="anonymous"
+		/>
+		<link rel="stylesheet" href="../css/profile.css" />
+		<link rel="stylesheet" href="../css/user_profile.css" />
+	</head>
+	<body>
+		<header class="navbar-header">
+			<div class="container-fluid">
+				<div class="row align-items-center">
+					<div class="col-md-3 col-sm-12 d-flex align-items-center">
+						<a href="../index.html" aria-label="InkFlow home">
+							<img src="../assets/images/logo/logo.png" alt="InkFlow Logo" class="logo" />
+						</a>
+					</div>
+					<div class="col-md-6 col-sm-12">
+						<form class="search-bar d-flex align-items-center" action="search_page.html" method="get">
+							<input class="form-control me-2" name="q" type="search" placeholder="Search stories" aria-label="Search stories" />
+							<button class="profile-search-button" type="submit" aria-label="Search">
+								<img src="../assets/images/icons/search-svgrepo-com.svg" alt="" width="20" height="20" />
+							</button>
+						</form>
+					</div>
+					<div class="col-md-3 col-sm-12 d-flex justify-content-end align-items-center gap-3">
+						<a href="story.html" class="btn btn-primary rounded-pill">Write</a>
+						<div class="profile-menu-container">
+							<img src="../assets/images/icons/profile-default-svgrepo-com.svg" alt="Profile" class="profile-logo" id="profileToggle" />
+							<nav class="profile-vertical-nav" id="profileNav">
+								<a href="user_profile.html" class="nav-item">Edit Profile</a>
+								<a href="#" class="nav-item">Settings</a>
+								<a href="#" class="nav-item">Help</a>
+								<hr />
+								<a href="Login.html" class="nav-item">Logout</a>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<nav class="sidebar-nav" aria-label="Primary navigation">
+			<ul class="nav-list">
+				<li><a href="../index.html" class="nav-link">Home</a></li>
+				<li><a href="profile.html" class="nav-link">Profile</a></li>
+				<li><a href="story.html" class="nav-link">Stories</a></li>
+				<li><a href="search_page.html" class="nav-link">Search</a></li>
+			</ul>
+		</nav>
+
+		<main class="user-profile-main">
+			<div class="user-profile-layout">
+				<section class="profile-hero" aria-labelledby="profileName">
+					<div class="profile-identity">
+						<div class="avatar-wrap">
+							<img id="profileAvatar" src="../assets/images/icons/profile-default-svgrepo-com.svg" alt="Profile avatar" class="large-avatar" />
+							<span class="online-dot" aria-label="Online"></span>
+						</div>
+						<div>
+							<p class="profile-eyebrow">Personal profile</p>
+							<h1 id="profileName">Alex Morgan</h1>
+							<p id="profileUsername" class="profile-username">@alexmorgan</p>
+							<p id="profileBio" class="profile-bio-large">Writer, curious observer, and collector of small moments.</p>
+						</div>
+					</div>
+					<button class="btn btn-primary edit-profile-button" type="button" id="openEditModal">Edit profile</button>
+				</section>
+
+				<div class="profile-content-grid">
+					<section class="details-panel" aria-labelledby="aboutTitle">
+						<div class="panel-heading">
+							<h2 id="aboutTitle">About</h2>
+							<span class="panel-rule"></span>
+						</div>
+						<dl class="details-list">
+							<div>
+								<dt>Email</dt>
+								<dd id="profileEmail">alex.morgan@example.com</dd>
+							</div>
+							<div>
+								<dt>Location</dt>
+								<dd id="profileLocation">Colombo, Sri Lanka</dd>
+							</div>
+							<div>
+								<dt>Website</dt>
+								<dd><a id="profileWebsite" href="https://inkflow.example.com">inkflow.example.com</a></dd>
+							</div>
+							<div>
+								<dt>Joined</dt>
+								<dd>January 2026</dd>
+							</div>
+						</dl>
+					</section>
+
+					<section class="stats-panel" aria-label="Profile statistics">
+						<div class="stat-item">
+							<strong>12</strong>
+							<span>Stories</span>
+						</div>
+						<div class="stat-item">
+							<strong>248</strong>
+							<span>Followers</span>
+						</div>
+						<div class="stat-item">
+							<strong>96</strong>
+							<span>Following</span>
+						</div>
+					</section>
+				</div>
+
+				<section class="activity-panel" aria-labelledby="activityTitle">
+					<div class="panel-heading">
+						<h2 id="activityTitle">Recent activity</h2>
+						<a href="profile.html">View all stories</a>
+					</div>
+					<div class="activity-list">
+						<article class="activity-item">
+							<div class="activity-marker"></div>
+							<div>
+								<p>Published <strong>Why I Travel Once Every Two Months</strong></p>
+								<span>3 days ago · 5 min read</span>
+							</div>
+						</article>
+						<article class="activity-item">
+							<div class="activity-marker"></div>
+							<div>
+								<p>Published <strong>Journaling Through Everything</strong></p>
+								<span>2 weeks ago · 4 min read</span>
+							</div>
+						</article>
+					</div>
+				</section>
+			</div>
+		</main>
+
+		<div class="profile-modal" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle" hidden>
+			<div class="modal-backdrop" data-close-modal></div>
+			<section class="profile-modal-card">
+				<div class="modal-heading">
+					<div>
+						<p class="profile-eyebrow">Your details</p>
+						<h2 id="editModalTitle">Edit profile</h2>
+					</div>
+					<button class="modal-close" type="button" aria-label="Close edit profile" data-close-modal>&times;</button>
+				</div>
+				<form id="profileForm">
+					<div class="avatar-upload-row">
+						<img id="modalAvatarPreview" src="../assets/images/icons/profile-default-svgrepo-com.svg" alt="Avatar preview" class="modal-avatar" />
+						<div>
+							<label class="upload-avatar-button" for="avatarInput">Change photo</label>
+							<input id="avatarInput" type="file" accept="image/*" hidden />
+							<p>Use a square JPG, PNG, or GIF image.</p>
+						</div>
+					</div>
+					<div class="form-grid">
+						<div class="profile-form-field">
+							<label for="nameInput">Full name</label>
+							<input id="nameInput" type="text" value="Alex Morgan" required />
+						</div>
+						<div class="profile-form-field">
+							<label for="usernameInput">Username</label>
+							<input id="usernameInput" type="text" value="alexmorgan" required />
+						</div>
+						<div class="profile-form-field full-width">
+							<label for="bioInput">Bio</label>
+							<textarea id="bioInput" rows="3" maxlength="180">Writer, curious observer, and collector of small moments.</textarea>
+						</div>
+						<div class="profile-form-field">
+							<label for="emailInput">Email</label>
+							<input id="emailInput" type="email" value="alex.morgan@example.com" required />
+						</div>
+						<div class="profile-form-field">
+							<label for="locationInput">Location</label>
+							<input id="locationInput" type="text" value="Colombo, Sri Lanka" />
+						</div>
+						<div class="profile-form-field full-width">
+							<label for="websiteInput">Website</label>
+							<input id="websiteInput" type="url" value="https://inkflow.example.com" />
+						</div>
+					</div>
+					<div class="modal-actions">
+						<span id="profileStatus" role="status"></span>
+						<div>
+							<button class="cancel-button" type="button" data-close-modal>Cancel</button>
+							<button class="btn btn-primary" type="submit">Save changes</button>
+						</div>
+					</div>
+				</form>
+			</section>
+		</div>
+
+		<script>
+			const editModal = document.getElementById("editModal");
+			const profileForm = document.getElementById("profileForm");
+			const avatarInput = document.getElementById("avatarInput");
+			const profileAvatar = document.getElementById("profileAvatar");
+			const modalAvatarPreview = document.getElementById("modalAvatarPreview");
+
+			function closeModal() {
+				editModal.hidden = true;
+				document.body.classList.remove("modal-open");
+			}
+
+			document.getElementById("openEditModal").addEventListener("click", () => {
+				editModal.hidden = false;
+				document.body.classList.add("modal-open");
+				document.getElementById("nameInput").focus();
+			});
+
+			document.querySelectorAll("[data-close-modal]").forEach((element) => {
+				element.addEventListener("click", closeModal);
+			});
+
+			document.addEventListener("keydown", (event) => {
+				if (event.key === "Escape" && !editModal.hidden) closeModal();
+			});
+
+			avatarInput.addEventListener("change", () => {
+				const [file] = avatarInput.files;
+				if (!file) return;
+				const imageUrl = URL.createObjectURL(file);
+				profileAvatar.src = imageUrl;
+				modalAvatarPreview.src = imageUrl;
+			});
+
+			profileForm.addEventListener("submit", (event) => {
+				event.preventDefault();
+				const name = document.getElementById("nameInput").value.trim();
+				const username = document.getElementById("usernameInput").value.trim().replace(/^@/, "");
+				const bio = document.getElementById("bioInput").value.trim();
+				const email = document.getElementById("emailInput").value.trim();
+				const location = document.getElementById("locationInput").value.trim();
+				const website = document.getElementById("websiteInput").value.trim();
+
+				document.getElementById("profileName").textContent = name;
+				document.getElementById("profileUsername").textContent = `@${username}`;
+				document.getElementById("profileBio").textContent = bio || "No bio added yet.";
+				document.getElementById("profileEmail").textContent = email;
+				document.getElementById("profileLocation").textContent = location || "Not specified";
+				const websiteLink = document.getElementById("profileWebsite");
+				websiteLink.textContent = website ? website.replace(/^https?:\/\//, "") : "Not specified";
+				websiteLink.href = website || "#";
+				document.getElementById("profileStatus").textContent = "Profile updated";
+
+				window.setTimeout(() => {
+					document.getElementById("profileStatus").textContent = "";
+					closeModal();
+				}, 700);
+			});
+
+			document.getElementById("profileToggle").addEventListener("click", (event) => {
+				event.stopPropagation();
+				document.getElementById("profileNav").classList.toggle("active");
+			});
+
+			document.addEventListener("click", (event) => {
+				if (!event.target.closest(".profile-menu-container")) {
+					document.getElementById("profileNav").classList.remove("active");
+				}
+			});
+		</script>
+	</body>
+</html>

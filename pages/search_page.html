@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Search Stories | InkFlow</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+			crossorigin="anonymous"
+		/>
+		<link rel="stylesheet" href="../css/profile.css" />
+		<link rel="stylesheet" href="../css/search.css" />
+	</head>
+	<body>
+		<header class="navbar-header">
+			<div class="container-fluid">
+				<div class="row align-items-center">
+					<div class="col-md-3 col-sm-12 d-flex align-items-center">
+						<a href="../index.html" aria-label="InkFlow home">
+							<img src="../assets/images/logo/logo.png" alt="InkFlow Logo" class="logo" />
+						</a>
+					</div>
+					<div class="col-md-6 col-sm-12">
+						<form class="search-bar d-flex align-items-center" id="headerSearchForm">
+							<input id="headerSearchInput" class="form-control me-2" type="search" placeholder="Search stories" aria-label="Search stories" />
+							<button class="search-submit" type="submit" aria-label="Search">
+								<img src="../assets/images/icons/search-svgrepo-com.svg" alt="" width="20" height="20" />
+							</button>
+						</form>
+					</div>
+					<div class="col-md-3 col-sm-12 d-flex justify-content-end align-items-center gap-3">
+						<a href="story.html" class="btn btn-primary rounded-pill">Write</a>
+						<div class="profile-menu-container">
+							<img src="../assets/images/icons/profile-default-svgrepo-com.svg" alt="Profile" class="profile-logo" id="profileToggle" />
+							<nav class="profile-vertical-nav" id="profileNav">
+								<a href="user_profile.html" class="nav-item">Edit Profile</a>
+								<a href="#" class="nav-item">Settings</a>
+								<a href="#" class="nav-item">Help</a>
+								<hr />
+								<a href="Login.html" class="nav-item">Logout</a>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<nav class="sidebar-nav" aria-label="Primary navigation">
+			<ul class="nav-list">
+				<li><a href="../index.html" class="nav-link">Home</a></li>
+				<li><a href="profile.html" class="nav-link">Profile</a></li>
+				<li><a href="story.html" class="nav-link">Stories</a></li>
+				<li><a href="search_page.html" class="nav-link active" aria-current="page">Search</a></li>
+			</ul>
+		</nav>
+
+		<main class="search-main">
+			<div class="search-layout">
+				<section class="search-intro" aria-labelledby="searchTitle">
+					<p class="eyebrow">Explore InkFlow</p>
+					<h1 id="searchTitle">Find your next read</h1>
+					<p>Search through ideas, experiences, and stories from the community.</p>
+				</section>
+
+				<form class="search-control" id="searchForm">
+					<label class="visually-hidden" for="searchInput">Search stories</label>
+					<input id="searchInput" type="search" placeholder="Try “travel”, “camera”, or “journaling”" autocomplete="off" />
+					<button type="submit" class="btn btn-primary">Search</button>
+				</form>
+
+				<div class="topic-row" aria-label="Popular topics">
+					<span class="topic-label">Popular:</span>
+					<button type="button" class="topic-chip" data-query="travel">Travel</button>
+					<button type="button" class="topic-chip" data-query="camera">Photography</button>
+					<button type="button" class="topic-chip" data-query="journaling">Journaling</button>
+					<button type="button" class="topic-chip" data-query="life">Life</button>
+				</div>
+
+				<div class="results-heading">
+					<h2>Stories</h2>
+					<p id="resultSummary" aria-live="polite">Showing all stories</p>
+				</div>
+
+				<section class="results-grid" id="resultsGrid" aria-label="Search results">
+					<article class="search-card" data-search="travel journeys adventure life">
+						<img src="../assets/images/backgrounds/I travel once every two months.jpg" alt="A journey through a new place" />
+						<div class="search-card-content">
+							<span class="result-category">Travel</span>
+							<h3>Why I Travel Once Every Two Months</h3>
+							<p>Small journeys can change the way you see the everyday.</p>
+							<span class="result-meta">5 min read · 3 days ago</span>
+						</div>
+					</article>
+					<article class="search-card" data-search="camera photography creativity technology">
+						<img src="../assets/images/backgrounds/Fujifilm Instax Mini EVO Hybrid Instant Camera.jpg" alt="Fujifilm instant camera" />
+						<div class="search-card-content">
+							<span class="result-category">Photography</span>
+							<h3>Making Room for the Perfect Frame</h3>
+							<p>A closer look at the tools that help ordinary moments last.</p>
+							<span class="result-meta">7 min read · 1 week ago</span>
+						</div>
+					</article>
+					<article class="search-card" data-search="journaling writing reflection life habits">
+						<img src="../assets/images/backgrounds/journaling through everything.jpg" alt="A journal and writing desk" />
+						<div class="search-card-content">
+							<span class="result-category">Writing</span>
+							<h3>Journaling Through Everything</h3>
+							<p>What happens when you give your thoughts somewhere to land?</p>
+							<span class="result-meta">4 min read · 2 weeks ago</span>
+						</div>
+					</article>
+					<article class="search-card" data-search="ideas design creativity life">
+						<img src="../assets/images/backgrounds/download (1).jpg" alt="Creative ideas in progress" />
+						<div class="search-card-content">
+							<span class="result-category">Ideas</span>
+							<h3>Beginning Before You Feel Ready</h3>
+							<p>A practical note on making progress before certainty arrives.</p>
+							<span class="result-meta">6 min read · 2 weeks ago</span>
+						</div>
+					</article>
+					<article class="search-card" data-search="travel places photography moments">
+						<img src="../assets/images/backgrounds/download (2).jpg" alt="A quiet travel destination" />
+						<div class="search-card-content">
+							<span class="result-category">Travel</span>
+							<h3>Postcards from the Quiet Places</h3>
+							<p>The best discoveries are often found just beyond the itinerary.</p>
+							<span class="result-meta">8 min read · 3 weeks ago</span>
+						</div>
+					</article>
+					<article class="search-card" data-search="life reflection stories people">
+						<img src="../assets/images/backgrounds/download (3).jpg" alt="A person looking toward the horizon" />
+						<div class="search-card-content">
+							<span class="result-category">Life</span>
+							<h3>The Stories We Carry Forward</h3>
+							<p>Some lessons become clearer when we finally tell them aloud.</p>
+							<span class="result-meta">5 min read · 1 month ago</span>
+						</div>
+					</article>
+				</section>
+
+				<div class="empty-state" id="emptyState" hidden>
+					<h2>No stories found</h2>
+					<p>Try a broader search or explore one of the popular topics above.</p>
+				</div>
+			</div>
+		</main>
+
+		<script>
+			const searchForm = document.getElementById("searchForm");
+			const headerSearchForm = document.getElementById("headerSearchForm");
+			const searchInput = document.getElementById("searchInput");
+			const headerSearchInput = document.getElementById("headerSearchInput");
+			const resultSummary = document.getElementById("resultSummary");
+			const resultsGrid = document.getElementById("resultsGrid");
+			const emptyState = document.getElementById("emptyState");
+			const cards = [...document.querySelectorAll(".search-card")];
+
+			function showResults(query) {
+				const normalizedQuery = query.trim().toLowerCase();
+				let visibleCount = 0;
+
+				cards.forEach((card) => {
+					const matches = !normalizedQuery || card.dataset.search.includes(normalizedQuery);
+					card.hidden = !matches;
+					if (matches) visibleCount += 1;
+				});
+
+				resultSummary.textContent = normalizedQuery
+					? `${visibleCount} ${visibleCount === 1 ? "story" : "stories"} for “${query.trim()}”`
+					: "Showing all stories";
+				resultsGrid.hidden = visibleCount === 0;
+				emptyState.hidden = visibleCount !== 0;
+				searchInput.value = query;
+				headerSearchInput.value = query;
+			}
+
+			searchForm.addEventListener("submit", (event) => {
+				event.preventDefault();
+				showResults(searchInput.value);
+			});
+
+			headerSearchForm.addEventListener("submit", (event) => {
+				event.preventDefault();
+				showResults(headerSearchInput.value);
+			});
+
+			document.querySelectorAll(".topic-chip").forEach((chip) => {
+				chip.addEventListener("click", () => showResults(chip.dataset.query));
+			});
+
+			const query = new URLSearchParams(window.location.search).get("q") || "";
+			showResults(query);
+
+			document.getElementById("profileToggle").addEventListener("click", (event) => {
+				event.stopPropagation();
+				document.getElementById("profileNav").classList.toggle("active");
+			});
+
+			document.addEventListener("click", (event) => {
+				if (!event.target.closest(".profile-menu-container")) {
+					document.getElementById("profileNav").classList.remove("active");
+				}
+			});
+		</script>
+	</body>
+</html>

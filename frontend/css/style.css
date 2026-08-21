@@ -121,6 +121,12 @@ body {
   outline: none;
 }
 
+.navbar-header .search-submit {
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
 .navbar-header .search-bar img {
   cursor: pointer;
   opacity: 0.6;

@@ -254,6 +254,13 @@ body.modal-open {
 	font-size: 12px;
 }
 
+.blog-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 10px;
+}
+
 .profile-modal[hidden] {
 	display: none;
 }

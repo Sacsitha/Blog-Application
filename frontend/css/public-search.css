@@ -1,0 +1,226 @@
+:root {
+  --public-ink: #17202a;
+  --public-muted: #66727d;
+  --public-blue: #0020a8;
+  --public-paper: #fffdf8;
+  --public-line: #e4e7eb;
+  --public-shadow: 0 14px 34px rgba(23, 32, 42, 0.08);
+}
+
+body {
+  color: var(--public-ink);
+  background: #f4f6f8;
+}
+
+.public-header {
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(228, 231, 235, 0.9);
+  box-shadow: 0 5px 18px rgba(23, 32, 42, 0.07);
+}
+
+.public-header .container-fluid {
+  width: min(100% - 40px, 1440px);
+  padding: 0;
+}
+
+.public-header .row {
+  min-height: 54px;
+}
+
+.public-header a[aria-label="InkFlow home"] {
+  display: inline-flex;
+  align-items: center;
+}
+
+.public-header .logo {
+  width: 108px;
+}
+
+.public-header .search-bar {
+  width: 100%;
+  min-height: 44px;
+  padding: 6px 14px;
+  background: #f7f8fa;
+  border-color: #e0e4e9;
+}
+
+.public-header .search-bar .form-control {
+  min-width: 0;
+  color: var(--public-ink);
+}
+
+.public-header .search-submit {
+  flex: 0 0 24px;
+}
+
+.public-header .search-submit img {
+  width: 20px;
+  height: 20px;
+}
+
+.public-header .btn-primary {
+  white-space: nowrap;
+  background: var(--public-blue);
+  border-color: var(--public-blue);
+}
+
+.public-search-main {
+  min-height: calc(100vh - 80px);
+  padding: 64px 34px 84px;
+  background:
+    radial-gradient(circle at 86% 8%, rgba(255, 211, 112, 0.25), transparent 28%),
+    linear-gradient(135deg, #f4f6f8 0%, #fffdf8 58%, #eef2f4 100%);
+}
+
+.public-search-main .search-layout {
+  max-width: 1120px;
+}
+
+.public-search-main .search-intro {
+  max-width: 700px;
+  margin-bottom: 32px;
+}
+
+.public-search-main .eyebrow,
+.public-search-main .result-category {
+  color: var(--public-blue);
+}
+
+.public-search-main .search-intro h1 {
+  color: var(--public-ink);
+  font-size: clamp(34px, 5vw, 58px);
+  letter-spacing: 0;
+  line-height: 1.05;
+}
+
+.public-search-main .search-intro > p:last-child {
+  color: var(--public-muted);
+  line-height: 1.6;
+}
+
+.public-search-main .search-control {
+  max-width: 820px;
+  margin-bottom: 22px;
+  padding: 8px;
+  border-color: var(--public-line);
+  border-radius: 8px;
+  box-shadow: var(--public-shadow);
+}
+
+.public-search-main .search-control input {
+  color: var(--public-ink);
+  font-size: 16px;
+}
+
+.public-search-main .search-control button {
+  min-width: 112px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--public-blue);
+}
+
+.public-search-main .topic-row {
+  margin-bottom: 56px;
+}
+
+.public-search-main .topic-chip {
+  color: var(--public-ink);
+  border-color: var(--public-line);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.public-search-main .topic-chip:hover,
+.public-search-main .topic-chip:focus-visible {
+  color: var(--public-blue);
+  border-color: var(--public-blue);
+  background: #ffffff;
+}
+
+.public-search-main .results-heading {
+  border-bottom-color: var(--public-line);
+}
+
+.public-search-main .results-heading h2 {
+  color: var(--public-ink);
+  font-size: 25px;
+}
+
+.public-search-main .results-grid {
+  gap: 22px;
+}
+
+.public-search-main .search-card {
+  min-height: 210px;
+  border-color: var(--public-line);
+  border-radius: 8px;
+  box-shadow: var(--public-shadow);
+}
+
+.public-search-main .search-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 38px rgba(23, 32, 42, 0.13);
+}
+
+.public-search-main .search-card > img {
+  min-height: 210px;
+}
+
+.public-search-main .search-card-content {
+  padding: 24px;
+}
+
+.public-search-main .search-card h3 {
+  color: var(--public-ink);
+  font-size: 19px;
+}
+
+.public-search-main .search-card p {
+  color: var(--public-muted);
+  line-height: 1.6;
+}
+
+.public-search-main .empty-state {
+  border-color: var(--public-line);
+  border-radius: 8px;
+  box-shadow: var(--public-shadow);
+}
+
+.public-search-status {
+  grid-column: 1 / -1;
+  padding: 48px;
+  color: var(--public-muted);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .public-header .container-fluid {
+    width: min(100% - 24px, 560px);
+  }
+
+  .public-header .row {
+    row-gap: 12px;
+  }
+
+  .public-header .col-md-3:last-child {
+    justify-content: center;
+  }
+
+  .public-search-main {
+    padding: 42px 20px 64px;
+  }
+
+  .public-search-main .search-intro h1 {
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .public-search-main {
+    padding: 32px 15px 52px;
+  }
+
+  .public-search-main .search-card-content {
+    padding: 20px;
+  }
+}

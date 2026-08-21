@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Stories | InkFlow</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/search.css" />
+    <link rel="stylesheet" href="../css/public-search.css" />
+  </head>
+  <body>
+    <header class="navbar-header public-header">
+      <div class="container-fluid">
+        <div class="row align-items-center">
+          <div class="col-md-3 col-sm-12 d-flex align-items-center">
+            <a href="../index.html" aria-label="InkFlow home">
+              <img src="../assets/images/logo/logo.png" alt="InkFlow Logo" class="logo" />
+            </a>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <form class="search-bar d-flex align-items-center" id="publicSearchForm">
+              <label class="visually-hidden" for="publicSearchInput">Search stories</label>
+              <input id="publicSearchInput" class="form-control me-2" name="q" type="search" placeholder="Search stories" aria-label="Search stories" />
+              <button class="search-submit" type="submit" aria-label="Search">
+                <img src="../assets/images/icons/search-svgrepo-com.svg" alt="" width="20" height="20" />
+              </button>
+            </form>
+          </div>
+          <div class="col-md-3 col-sm-12 d-flex justify-content-end align-items-center">
+            <a href="Login.html" class="btn btn-primary rounded-pill">SignIn/Up</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="search-main public-search-main">
+      <div class="search-layout">
+        <section class="search-intro" aria-labelledby="searchTitle">
+          <p class="eyebrow">Explore InkFlow</p>
+          <h1 id="searchTitle">Find your next read</h1>
+          <p>Search through ideas, experiences, and stories from the community.</p>
+        </section>
+
+        <form class="search-control" id="mainSearchForm">
+          <label class="visually-hidden" for="mainSearchInput">Search stories</label>
+          <input id="mainSearchInput" type="search" placeholder="Try travel, camera, or journaling" autocomplete="off" />
+          <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        <div class="topic-row" aria-label="Popular topics">
+          <span class="topic-label">Popular:</span>
+          <button type="button" class="topic-chip" data-query="travel">Travel</button>
+          <button type="button" class="topic-chip" data-query="camera">Photography</button>
+          <button type="button" class="topic-chip" data-query="journaling">Journaling</button>
+          <button type="button" class="topic-chip" data-query="life">Life</button>
+        </div>
+
+        <div class="results-heading">
+          <h2>Stories</h2>
+          <p id="resultSummary" aria-live="polite">Search for a story to begin</p>
+        </div>
+
+        <section class="results-grid" id="resultsGrid" aria-label="Search results"></section>
+        <div class="empty-state" id="emptyState" hidden>
+          <h2>No stories found</h2>
+          <p>Try a broader search or explore one of the popular topics above.</p>
+        </div>
+      </div>
+    </main>
+
+    <script src="../js/api-client.js"></script>
+    <script>
+      const publicSearchForm = document.getElementById('publicSearchForm');
+      const mainSearchForm = document.getElementById('mainSearchForm');
+      const publicSearchInput = document.getElementById('publicSearchInput');
+      const mainSearchInput = document.getElementById('mainSearchInput');
+      const resultSummary = document.getElementById('resultSummary');
+      const resultsGrid = document.getElementById('resultsGrid');
+      const emptyState = document.getElementById('emptyState');
+
+      publicSearchForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        performSearch(publicSearchInput.value);
+      });
+
+      mainSearchForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        performSearch(mainSearchInput.value);
+      });
+
+      document.querySelectorAll('.topic-chip').forEach((chip) => {
+        chip.addEventListener('click', () => performSearch(chip.dataset.query));
+      });
+
+      const initialQuery = new URLSearchParams(window.location.search).get('q') || '';
+      if (initialQuery) {
+        performSearch(initialQuery);
+      }
+
+      async function performSearch(rawQuery) {
+        const query = rawQuery.trim();
+        publicSearchInput.value = query;
+        mainSearchInput.value = query;
+        emptyState.hidden = true;
+
+        if (!query) {
+          resultsGrid.innerHTML = '';
+          resultSummary.textContent = 'Search for a story to begin';
+          return;
+        }
+
+        resultsGrid.innerHTML = '<div class="public-search-status">Searching...</div>';
+
+        try {
+          const response = await APIClient.search(query, 'blogs', 50, 0);
+          const blogs = response.success && response.results && response.results.blogs ? response.results.blogs : [];
+
+          if (blogs.length === 0) {
+            resultsGrid.innerHTML = '';
+            emptyState.hidden = false;
+            resultSummary.textContent = `No stories for "${query}"`;
+            return;
+          }
+
+          resultsGrid.innerHTML = blogs.map((blog, index) => {
+            const body = blog.body || '';
+            const title = blog.title || 'Untitled story';
+            const preview = blog.subtitle || `${body.substring(0, 100)}${body.length > 100 ? '...' : ''}`;
+            const published = blog.created_at ? new Date(blog.created_at).toLocaleDateString() : '';
+            return `
+              <a class="search-card text-decoration-none" href="view_blog.html?blog_id=${encodeURIComponent(blog.blog_id)}">
+                <img src="${escapeHtml(blog.cover_image_url || getFallbackImage(index))}" alt="${escapeHtml(title)}" />
+                <div class="search-card-content">
+                  <span class="result-category">Blog</span>
+                  <h3>${escapeHtml(title)}</h3>
+                  <p>${escapeHtml(preview)}</p>
+                  <small class="text-muted">By <strong>${escapeHtml(blog.full_name || blog.username || 'InkFlow writer')}</strong></small>
+                  <span class="result-meta">${escapeHtml(published)}</span>
+                </div>
+              </a>`;
+          }).join('');
+
+          resultSummary.textContent = `${blogs.length} ${blogs.length === 1 ? 'story' : 'stories'} for "${query}"`;
+        } catch (error) {
+          console.error('Search error:', error);
+          resultsGrid.innerHTML = '<div class="public-search-status text-danger">Search is temporarily unavailable. Please try again.</div>';
+        }
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (character) => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+        }[character]));
+      }
+
+      function getFallbackImage(index) {
+        const images = [
+          '../assets/images/backgrounds/download (1).jpg',
+          '../assets/images/backgrounds/download (2).jpg',
+          '../assets/images/backgrounds/download (3).jpg',
+          '../assets/images/backgrounds/download (4).jpg'
+        ];
+        return images[index % images.length];
+      }
+    </script>
+  </body>
+</html>

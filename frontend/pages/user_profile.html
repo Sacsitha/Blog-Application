@@ -49,8 +49,8 @@
 
 		<nav class="sidebar-nav" aria-label="Primary navigation">
 			<ul class="nav-list">
-				<li><a href="../index.html" class="nav-link">Home</a></li>
-				<li><a href="profile.html" class="nav-link">Profile</a></li>
+				<li><a href="profile.html" class="nav-link">Home</a></li>
+				<li><a href="user_profile.html" class="nav-link">Profile</a></li>
 				<li><a href="story.html" class="nav-link">Stories</a></li>
 				<li><a href="search_page.html" class="nav-link">Search</a></li>
 			</ul>
@@ -102,15 +102,15 @@
 
 					<section class="stats-panel" aria-label="Profile statistics">
 						<div class="stat-item">
-							<strong>12</strong>
+							<strong></strong>
 							<span>Stories</span>
 						</div>
 						<div class="stat-item">
-							<strong>248</strong>
+							<strong>0</strong>
 							<span>Followers</span>
 						</div>
 						<div class="stat-item">
-							<strong>96</strong>
+							<strong>0</strong>
 							<span>Following</span>
 						</div>
 					</section>
@@ -251,6 +251,7 @@
 
 					// Load user's blogs
 					const blogsResponse = await APIClient.getUserBlogs(currentUser.user_id, 10, 0);
+					document.querySelector('.stat-item strong').textContent = blogsResponse.total_count ?? blogsResponse.blogs.length;
 					if (blogsResponse.success && blogsResponse.blogs.length > 0) {
 						const activityList = document.querySelector('.activity-list');
 						activityList.innerHTML = blogsResponse.blogs.map(blog => `
@@ -259,7 +260,10 @@
 								<div>
 									<p>Published <strong>${blog.title}</strong></p>
 									<span>${new Date(blog.created_at).toLocaleDateString()} · ${Math.ceil(blog.body.split(/\s+/).length / 200)} min read</span>
-									<button type="button" class="btn btn-sm btn-outline-primary edit-blog-button" data-blog-id="${blog.blog_id}">Edit story</button>
+									<div class="blog-actions">
+										<button type="button" class="btn btn-sm btn-outline-primary edit-blog-button" data-blog-id="${blog.blog_id}">Edit story</button>
+										<button type="button" class="btn btn-sm btn-outline-danger delete-blog-button" data-blog-id="${blog.blog_id}" data-blog-title="${blog.title}">Delete story</button>
+									</div>
 								</div>
 							</article>
 						`).join('');
@@ -270,11 +274,10 @@
 							));
 						});
 
-						// Update stats
-						document.querySelectorAll('.stat-item')[0].innerHTML = `
-							<strong>${blogsResponse.blogs.length}</strong>
-							<span>Stories</span>
-						`;
+						activityList.querySelectorAll('.delete-blog-button').forEach((button) => {
+							button.addEventListener('click', () => deleteBlog(button));
+						});
+
 					}
 				} catch (error) {
 					console.error('Error loading profile:', error);
@@ -384,6 +387,23 @@
 			function closeBlogEditor() {
 				blogEditModal.hidden = true;
 				document.body.classList.remove("modal-open");
+			}
+
+			async function deleteBlog(button) {
+				const blogTitle = button.dataset.blogTitle || "this story";
+				if (!window.confirm(`Delete "${blogTitle}"? This action cannot be undone.`)) return;
+
+				button.disabled = true;
+				button.textContent = "Deleting...";
+				try {
+					const response = await APIClient.deleteBlog(button.dataset.blogId, currentUser.user_id);
+					if (!response.success) throw new Error(response.error || "Unable to delete story");
+					window.location.reload();
+				} catch (error) {
+					button.disabled = false;
+					button.textContent = "Delete story";
+					window.alert(error.message || "Unable to delete story");
+				}
 			}
 
 			document.querySelectorAll("[data-close-blog-modal]").forEach((element) => {

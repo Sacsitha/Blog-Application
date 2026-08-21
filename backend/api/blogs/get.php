@@ -33,7 +33,12 @@ if ($user_id) {
                               WHERE b.user_id = ? 
                               ORDER BY b.created_at DESC 
                               LIMIT ? OFFSET ?", [$user_id, (string)$limit, (string)$offset]);
-    sendResponse(["success" => true, "blogs" => $blogs], 200);
+    $blogCount = fetchOne($conn, "SELECT COUNT(*) AS total_count FROM blog WHERE user_id = ?", [$user_id]);
+    sendResponse([
+        "success" => true,
+        "blogs" => $blogs,
+        "total_count" => (int)($blogCount['total_count'] ?? 0)
+    ], 200);
 }
 
 // Search blogs

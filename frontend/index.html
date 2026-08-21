@@ -25,10 +25,12 @@
             <img src="./assets/images/logo/logo.png" alt="InkFlow Logo" class="logo" />
           </div>
           <div class="col-md-6 col-sm-12">
-            <div class="search-bar d-flex align-items-center">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-              <img src="./assets/images/icons/search-svgrepo-com.svg" alt="Search Icon" width="20px" height="20px" />
-            </div>
+            <form class="search-bar d-flex align-items-center" id="indexSearchForm">
+              <input id="indexSearchInput" class="form-control me-2" name="q" type="search" placeholder="Search" aria-label="Search stories" />
+              <button class="search-submit" type="submit" aria-label="Search">
+                <img src="./assets/images/icons/search-svgrepo-com.svg" alt="" width="20" height="20" />
+              </button>
+            </form>
           </div>
           <div class="col-md-3 col-sm-12 d-flex justify-content-end align-items-center">
             <a id="signinBtn" href="pages/Login.html" class="btn btn-primary rounded-pill">SignIn/Up</a>
@@ -99,6 +101,14 @@
     <script src="./js/api-client.js"></script>
     <script src="./js/script.js"></script>
     <script>
+      document.getElementById('indexSearchForm').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const query = document.getElementById('indexSearchInput').value.trim();
+        if (query) {
+          window.location.href = `pages/public_search.html?q=${encodeURIComponent(query)}`;
+        }
+      });
+
       // Check if user is authenticated on load
       document.addEventListener('DOMContentLoaded', function() {
         const signinBtn = document.getElementById('signinBtn');

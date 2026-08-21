@@ -246,6 +246,20 @@ body {
 	}
 }
 
+@media (max-width: 576px) {
+	.search-intro h1 {
+		font-size: 32px;
+	}
+
+	.search-intro > p:last-child {
+		font-size: 14px;
+	}
+
+	.topic-row {
+		margin-bottom: 28px;
+	}
+}
+
 @media (max-width: 480px) {
 	.search-control {
 		flex-direction: column;

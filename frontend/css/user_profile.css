@@ -497,4 +497,27 @@ body.modal-open {
 	.modal-actions button {
 		flex: 1;
 	}
+
+	.details-panel,
+	.activity-panel {
+		padding: 18px;
+	}
+
+	.stats-panel {
+		padding-right: 6px;
+		padding-left: 6px;
+	}
+
+	.stat-item strong {
+		font-size: 21px;
+	}
+
+	.profile-modal {
+		padding: 10px;
+	}
+
+	.profile-modal-card {
+		max-height: calc(100vh - 20px);
+		padding: 20px 16px;
+	}
 }

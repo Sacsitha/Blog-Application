@@ -1,12 +1,6 @@
 <?php
-// Database configuration
-$host = "localhost";
-$username = "245091G";
-$password = "Sacsi_7453";
-$dbname = "blog_db";
-
-// Create connection
-$conn = new mysqli($host, $username, $password, $dbname);
+// Load the shared database connection.
+require_once __DIR__ . '/db/db.php';
 
 // Check connection
 if ($conn->connect_error) {

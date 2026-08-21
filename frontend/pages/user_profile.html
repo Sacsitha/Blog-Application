@@ -122,20 +122,7 @@
 						<a href="profile.html">View all stories</a>
 					</div>
 					<div class="activity-list">
-						<article class="activity-item">
-							<div class="activity-marker"></div>
-							<div>
-								<p>Published <strong>Why I Travel Once Every Two Months</strong></p>
-								<span>3 days ago · 5 min read</span>
-							</div>
-						</article>
-						<article class="activity-item">
-							<div class="activity-marker"></div>
-							<div>
-								<p>Published <strong>Journaling Through Everything</strong></p>
-								<span>2 weeks ago · 4 min read</span>
-							</div>
-						</article>
+						<p class="activity-empty">Loading recent activity...</p>
 					</div>
 				</section>
 			</div>
@@ -278,6 +265,8 @@
 							button.addEventListener('click', () => deleteBlog(button));
 						});
 
+					} else {
+						document.querySelector('.activity-list').innerHTML = '<p class="activity-empty">No recent activity.</p>';
 					}
 				} catch (error) {
 					console.error('Error loading profile:', error);

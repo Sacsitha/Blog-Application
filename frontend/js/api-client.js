@@ -3,7 +3,7 @@
  * Handles all communication with the backend API
  */
 
-const API_BASE_URL = 'http://localhost/Blog-Application/backend/api';
+const API_BASE_URL = new URL('../../backend/api', document.currentScript.src).href.replace(/\/$/, '');
 
 class APIClient {
   /**

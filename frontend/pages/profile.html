@@ -108,8 +108,8 @@
             document.getElementById('sidebarAvatar').src = user.avatar_url;
           }
 
-          // Load blogs
-          const response = await APIClient.getAllBlogs(20, 0);
+          // Load only the logged-in user's blogs
+          const response = await APIClient.getUserBlogs(user.user_id, 20, 0);
           const blogsContainer = document.getElementById('blogsContainer');
           const noBlogs = document.getElementById('noBlogs');
           const loadingMessage = document.getElementById('loadingMessage');
